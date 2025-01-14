@@ -1,5 +1,5 @@
-import 'package:snappy/data/models/model_story.dart';
-import 'package:snappy/data/models/response_api_message.dart';
+import 'package:snappy/data/models/model/model_story.dart';
+import 'package:snappy/data/models/response/response_api_message.dart';
 
 class StoriesResponse extends ApiMessageResponse {
   final List<StoryModel>? listStory;
