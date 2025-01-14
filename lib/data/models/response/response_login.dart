@@ -1,6 +1,6 @@
-import 'package:snappy/data/models/response_api_message.dart';
+import 'package:snappy/data/models/response/response_api_message.dart';
 
-import 'model_login_result.dart';
+import '../model/model_login_result.dart';
 
 class LoginResponse extends ApiMessageResponse {
   final LoginResult? loginResult;
