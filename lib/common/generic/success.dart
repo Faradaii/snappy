@@ -1,6 +1,11 @@
-class Success<T> {
-  final String message;
-  final T data;
+import 'package:equatable/equatable.dart';
 
-  Success({required this.message, required this.data});
+class Success<T> extends Equatable {
+  final String message;
+  final T? data;
+
+  const Success({required this.message, this.data});
+
+  @override
+  List<Object> get props => [message, data ?? ''];
 }
