@@ -9,7 +9,8 @@ class RegisterAuth {
 
   RegisterAuth(this.repository);
 
-  Future<Either<Failure, Success<String>>> execute() {
-    return repository.registerAuth();
+  Future<Either<Failure, Success<String>>> execute(String name, String email,
+      String password) {
+    return repository.registerAuth(name, email, password);
   }
 }
