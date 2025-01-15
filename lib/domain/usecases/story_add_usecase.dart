@@ -9,7 +9,8 @@ class AddStory {
 
   AddStory(this.repository);
 
-  Future<Either<Failure, Success<String>>> execute() {
-    return repository.addStory();
+  Future<Either<Failure, Success<String>>> execute(String description,
+      List<int> photo, double? lat, double? lon) {
+    return repository.addStory(description, photo, lat, lon);
   }
 }

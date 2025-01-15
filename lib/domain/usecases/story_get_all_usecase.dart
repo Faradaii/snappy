@@ -10,7 +10,8 @@ class GetAllStory {
 
   GetAllStory(this.repository);
 
-  Future<Either<Failure, Success<List<Story>>>> execute() {
-    return repository.getStories();
+  Future<Either<Failure, Success<List<Story>>>> execute(int? page, int? size,
+      int? location) {
+    return repository.getStories(page, size, location);
   }
 }
