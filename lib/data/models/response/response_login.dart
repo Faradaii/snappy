@@ -16,7 +16,7 @@ class LoginResponse extends ApiMessageResponse {
     message: json['message'],
     loginResult:
         json['loginResult'] != null
-            ? LoginResult.fromJson(json['loginResult'])
+            ? LoginResult.fromJson(json: json['loginResult'])
             : null,
   );
 
