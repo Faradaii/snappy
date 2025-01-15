@@ -47,21 +47,41 @@ class DatabaseHelper {
     ''');
   }
 
-  Future<int> insertListStory(List<StoryModel> listStory) async {
+  Future<int> insertOrUpdateListStory(List<StoryModel> listStory) async {
     final db = await database;
-    final batch = db!.batch();
+
+    final existingStories = await db!.query(_tblSnappy);
+    final existingIds = existingStories.map((e) => e['id']).toSet();
+    final responseIds = listStory.map((story) => story.id).toSet();
+
+    final batch = db.batch();
 
     for (final story in listStory) {
-      batch.insert(_tblSnappy, story.toJson());
+      if (!existingIds.contains(story.id)) {
+        batch.insert(_tblSnappy, story.toJson());
+      } else {
+        batch.update(
+          _tblSnappy,
+          story.toJson(),
+          where: 'id = ?',
+          whereArgs: [story.id],
+        );
+      }
+    }
+
+    for (final id in existingIds) {
+      if (!responseIds.contains(id)) {
+        batch.delete(
+          _tblSnappy,
+          where: 'id = ?',
+          whereArgs: [id],
+        );
+      }
     }
 
     await batch.commit(noResult: true);
-    return 1;
-  }
 
-  Future<int> insertStory(StoryModel story) async {
-    final db = await database;
-    return await db!.insert(_tblSnappy, story.toJson());
+    return 1;
   }
 
   Future<Map<String, dynamic>?> getStoryById(String id) async {
