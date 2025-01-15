@@ -2,20 +2,17 @@ import 'package:snappy/data/models/model/model_story.dart';
 
 import 'local/database_helper.dart';
 
-abstract class MovieLocalDataSource {
+abstract class StoryLocalDataSource {
   Future<String> insertListStory(List<StoryModel> listStory);
-
   Future<String> insertStory(StoryModel story);
-
   Future<StoryModel?> getStoryById(String id);
-
   Future<List<StoryModel>> getStories();
 }
 
-class MovieLocalDataSourceImpl implements MovieLocalDataSource {
+class StoryLocalDataSourceImpl implements StoryLocalDataSource {
   final DatabaseHelper databaseHelper;
 
-  MovieLocalDataSourceImpl({required this.databaseHelper});
+  StoryLocalDataSourceImpl({required this.databaseHelper});
 
   @override
   Future<String> insertListStory(List<StoryModel> listStory) async {
