@@ -10,4 +10,7 @@ class AddStoryRequest {
     this.lat,
     this.lon,
   });
+
+  Map<String, dynamic> toJson() =>
+      {'description': description, 'photo': photo, 'lat': lat, 'lon': lon};
 }
