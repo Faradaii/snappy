@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snappy/common/utils/preferences_helper.dart';
+import 'package:snappy/config/route/router.dart';
 import 'package:snappy/data/datasources/local/database_helper.dart';
 import 'package:snappy/data/datasources/story_local_datasource.dart';
 import 'package:snappy/data/datasources/story_remote_datasource.dart';
@@ -19,16 +21,26 @@ import '../presentation/bloc/add_story/add_story_bloc.dart';
 
 final getIt = GetIt.instance;
 
-void injectionInit() {
-  // common
-  getIt.registerLazySingletonAsync<SharedPreferences>(() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs;
-  });
+Future<void> injectionInit() async {
+  // SharedPreferences
+  getIt.registerLazySingletonAsync<SharedPreferences>(
+        () async => await SharedPreferences.getInstance(),
+  );
+
+  // Dio
   getIt.registerLazySingleton<Dio>(() => Dio());
 
-  // helper
+  // Helpers
+  await getIt.isReady<SharedPreferences>();
   getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
+  getIt.registerLazySingleton<PreferencesHelper>(
+        () => PreferencesHelper(sharedPreferences: getIt()),
+  );
+
+  // AppRouter
+  getIt.registerLazySingleton<AppRouter>(
+        () => AppRouter(preferencesHelper: getIt()),
+  );
 
   // DATA LAYER
   // datasource
