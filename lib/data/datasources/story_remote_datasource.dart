@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:snappy/data/models/model/model_login_result.dart';
 import 'package:snappy/data/models/request/request_add_story.dart';
 import 'package:snappy/data/models/request/request_login.dart';
@@ -29,8 +28,8 @@ abstract class StoryRemoteDataSource {
 class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   final Dio dio;
   final PreferencesHelper preferencesHelper;
-  late final String baseUrl;
-  late final String token;
+  late final String? baseUrl;
+  late final String? token;
 
   StoryRemoteDataSourceImpl({
     required this.dio, required this.preferencesHelper,
@@ -39,14 +38,19 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   }
 
   init() async {
-    baseUrl = dotenv.env['API_BASE_URL'] ?? '';
-    if (baseUrl.isEmpty) {
+    baseUrl = 'https://story-api.dicoding.dev/v1';
+    if (baseUrl == null) {
       throw Exception('API_BASE_URL is not defined in the environment file');
     } else {
-      dio.options.baseUrl = baseUrl;
+      dio.options.baseUrl = baseUrl!;
     }
 
-    token = await preferencesHelper.getToken().then((value) => value ?? '');
+    token = await preferencesHelper.getToken().then((value) => value);
+    print('Token yang digunakan: $token');
+    if (token != null) {
+      dio.options.headers['Authorization'] =
+      'Bearer $token'; // Set token di header
+    }
 
     if (!dio.interceptors.any((i) => i is InterceptorsWrapper)) {
       dio.interceptors.add(
@@ -55,10 +59,13 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
             options.headers['Authorization'] = 'Bearer $token';
             return handler.next(options);
           },
-          onError: (e, handler) async {
-            throw Exception(e);
-          },
-        ),
+            onResponse: (response, handler) async {
+              if (response.statusCode == 401) {
+                print(response.data);
+              }
+              print(response.toString());
+              return handler.next(response);
+            }),
       );
     }
   }
@@ -81,14 +88,14 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   @override
   Future<LoginResponse> authLogin(LoginRequest loginData) async {
     final response = await dio.post('/login', data: loginData.toJson());
-    print(response);
 
     if (response.statusCode == 200) {
       LoginResult loginResult = LoginResult.fromJson(
-          email: loginData.email, json: response.data);
-      await preferencesHelper.setSavedUser(loginResult);
-
-      return LoginResponse.fromJson(jsonDecode(response.data));
+        email: loginData.email,
+        json: response.data['loginResult'],
+      );
+      await preferencesHelper.setSavedUser(loginResult.toEntity());
+      return LoginResponse.fromJson(response.data);
     } else {
       throw Exception('Failed to login');
     }

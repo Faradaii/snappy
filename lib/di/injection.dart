@@ -11,6 +11,7 @@ import 'package:snappy/domain/usecases/auth_register_usecase.dart';
 import 'package:snappy/domain/usecases/story_add_usecase.dart';
 import 'package:snappy/domain/usecases/story_get_all_usecase.dart';
 import 'package:snappy/domain/usecases/story_get_detail_usecase.dart';
+import 'package:snappy/presentation/bloc/auth/auth_bloc.dart';
 import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
@@ -39,7 +40,7 @@ Future<void> injectionInit() async {
 
   // AppRouter
   getIt.registerLazySingleton<AppRouter>(
-        () => AppRouter(preferencesHelper: getIt()),
+        () => AppRouter(),
   );
 
   // DATA LAYER
@@ -75,4 +76,6 @@ Future<void> injectionInit() async {
   getIt.registerLazySingleton(() => StoryBloc(storyGetAllUseCase: getIt()));
   getIt.registerLazySingleton(() =>
       SharedPreferenceBloc(preferencesHelper: getIt()));
+  getIt.registerLazySingleton(() =>
+      AuthBloc(authLoginUseCase: getIt(), authRegisterUseCase: getIt()));
 }

@@ -15,14 +15,14 @@ class LoginResult {
     userId: json['userId'],
     name: json['name'],
     token: json['token'],
-        email: email ?? json['token'] ?? '',
+        email: email ?? '',
   );
 
   Map<String, dynamic> toJson() => {
     'userId': userId,
     'name': name,
     'token': token,
-    'email': email,
+    'email': email ?? '',
   };
 
   User toEntity() {

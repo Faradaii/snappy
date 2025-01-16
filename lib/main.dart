@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/di/injection.dart';
 import 'package:snappy/presentation/bloc/add_story/add_story_bloc.dart';
+import 'package:snappy/presentation/bloc/auth/auth_bloc.dart';
 import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
@@ -22,6 +23,7 @@ void main() async {
       BlocProvider(create: (context) => getIt<StoryBloc>()),
       BlocProvider(create: (context) => getIt<DetailStoryBloc>()),
       BlocProvider(create: (context) => getIt<SharedPreferenceBloc>()),
+      BlocProvider(create: (context) => getIt<AuthBloc>()),
     ],
     child: const MyApp(),
   ));

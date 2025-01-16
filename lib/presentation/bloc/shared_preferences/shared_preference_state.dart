@@ -4,12 +4,14 @@ sealed class SharedPreferenceState {
   final DataState dataState;
   final AppLanguage? language;
   final bool? isFirstTime;
+  final User? savedUser;
   final String? errorMessage;
 
   const SharedPreferenceState({
     required this.dataState,
     this.language,
     this.isFirstTime,
+    this.savedUser,
     this.errorMessage,
   });
 
@@ -17,6 +19,7 @@ sealed class SharedPreferenceState {
     DataState? dataState,
     AppLanguage? language,
     bool? isFirstTime,
+    User? savedUser,
     String? errorMessage,
   }) {
     if (this is SharedPreferenceInitialState) {
@@ -25,6 +28,7 @@ sealed class SharedPreferenceState {
       return SharedPreferenceLoadedState(
         language: language ?? this.language,
         isFirstTime: isFirstTime ?? this.isFirstTime,
+        savedUser: savedUser ?? this.savedUser,
       );
     } else if (this is SharedPreferenceErrorState) {
       return SharedPreferenceErrorState(errorMessage ?? this.errorMessage!);
@@ -43,10 +47,12 @@ final class SharedPreferenceErrorState extends SharedPreferenceState {
 }
 
 final class SharedPreferenceLoadedState extends SharedPreferenceState {
-  const SharedPreferenceLoadedState({AppLanguage? language, bool? isFirstTime})
+  const SharedPreferenceLoadedState(
+      {AppLanguage? language, bool? isFirstTime, User? savedUser})
     : super(
         dataState: DataState.success,
         language: language,
         isFirstTime: isFirstTime,
+    savedUser: savedUser,
       );
 }

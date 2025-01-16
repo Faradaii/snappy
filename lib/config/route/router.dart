@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:snappy/common/utils/preferences_helper.dart';
+import 'package:snappy/presentation/pages/login/login_page.dart';
 
 import '../../presentation/pages/onboarding/onboarding_page.dart';
 import '../../presentation/pages/splash/splash_page.dart';
@@ -17,9 +17,6 @@ abstract class PageRouteName {
 
 class AppRouter {
   GoRouter get router => _goRouter;
-  final PreferencesHelper preferencesHelper;
-
-  AppRouter({required this.preferencesHelper});
 
   late final GoRouter _goRouter = GoRouter(
     initialLocation: PageRouteName.splash,
@@ -42,7 +39,7 @@ class AppRouter {
         path: PageRouteName.login,
         pageBuilder:
             (_, state) => MaterialPage(
-              child: (Scaffold(body: SafeArea(child: Text("login")))),
+              child: (Scaffold(body: LoginPage())),
             ),
       ),
       GoRoute(
@@ -67,7 +64,7 @@ class AppRouter {
         path: PageRouteName.splash,
         pageBuilder:
             (_, state) => MaterialPage(
-              child: SplashPage(preferencesHelper: preferencesHelper),
+              child: SplashPage(),
             ),
       ),
     ],

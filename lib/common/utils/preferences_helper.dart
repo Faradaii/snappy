@@ -3,23 +3,25 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snappy/common/constant/app_constant.dart';
 import 'package:snappy/data/models/model/model_login_result.dart';
+import 'package:snappy/domain/entities/user_entity.dart';
 
 class PreferencesHelper {
   final SharedPreferences sharedPreferences;
 
   PreferencesHelper({required this.sharedPreferences});
 
-  static const isFirstTime = 'IS_FIRST_TIME';
-  static const user = 'User';
-  static const language = 'Language';
+  static const isFirstTimePref = 'IS_FIRST_TIME';
+  static const userLoggedPref = 'USER_LOGGED';
+  static const languageSelectedPref = 'LANGUAGE_SELECTED';
 
-  Future<LoginResult?> getSavedUser() async {
-    final savedData = sharedPreferences.getString(user);
+  Future<User?> getSavedUser() async {
+    final savedData = sharedPreferences.getString(userLoggedPref);
+    print("$savedData DONE GET DATA");
     if (savedData == null || savedData.isEmpty) {
       return null;
     }
 
-    LoginResult result = LoginResult.fromJson(json: json.decode(savedData));
+    User result = LoginResult.fromJson(json: json.decode(savedData)).toEntity();
     return result;
   }
 
@@ -28,25 +30,30 @@ class PreferencesHelper {
     return token;
   }
 
-  Future<void> setSavedUser(LoginResult newUser) async {
-    String user = jsonEncode(newUser.toJson());
-    await sharedPreferences.setString(user, user);
+  Future<void> setSavedUser(User newUser) async {
+    String user = jsonEncode(LoginResult(name: newUser.name,
+        email: newUser.email,
+        userId: newUser.userId,
+        token: newUser.token).toJson());
+    await sharedPreferences.setString(userLoggedPref, user);
   }
 
   Future<bool> getIsFirstTime() async {
-    return sharedPreferences.getBool(isFirstTime) ?? true;
+    return sharedPreferences.getBool(isFirstTimePref) ?? true;
   }
 
   Future<void> setFirstTime(bool value) async {
-    await sharedPreferences.setBool(isFirstTime, value);
+    await sharedPreferences.setBool(isFirstTimePref, value);
   }
 
   Future<AppLanguage?> getLanguage() async {
     return AppLanguage.values.firstWhere((e) =>
-    e.name == sharedPreferences.getString(language));
+    e.name == sharedPreferences.getString(languageSelectedPref),
+      orElse: () => AppLanguage.en,
+    );
   }
 
   Future<void> setLanguage(AppLanguage newLanguage) async {
-    await sharedPreferences.setString(language, newLanguage.name);
+    await sharedPreferences.setString(languageSelectedPref, newLanguage.name);
   }
 }
