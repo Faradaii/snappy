@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Welcome to \n Snappy!",
+    "image": "assets/images/onboarding_1.svg",
+    "desc": "A place where your stories come to life. Dive into a world of endless imagination."
+  },
+  {
+    "title": "Create \n Share Your Tales",
+    "image": "assets/images/onboarding_2.svg",
+    "desc": "Write, share, and connect with other storytellers around the world."
+  },
+  {
+    "title": "Discover \n New Adventures",
+    "image": "assets/images/onboarding_3.svg",
+    "desc": "Uncover unique stories and journeys from people just like you!"
+  }
+]

@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/common/utils/preferences_helper.dart';
 
-abstract class PageRoute {
+import '../../presentation/pages/onboarding/onboarding_page.dart';
+import '../../presentation/pages/splash/splash_page.dart';
+
+abstract class PageRouteName {
   static const home = '/';
   static const detail = '/detail/:id';
   static const add = '/add';
@@ -19,71 +22,54 @@ class AppRouter {
   AppRouter({required this.preferencesHelper});
 
   late final GoRouter _goRouter = GoRouter(
-    initialLocation: PageRoute.splash,
+    initialLocation: PageRouteName.splash,
     routes: [
       GoRoute(
-        path: PageRoute.home,
+        path: PageRouteName.home,
         pageBuilder:
             (_, state) => MaterialPage(
               child: (Scaffold(body: SafeArea(child: Text("home")))),
             ),
       ),
       GoRoute(
-        path: PageRoute.detail,
+        path: PageRouteName.detail,
         pageBuilder:
             (_, state) => MaterialPage(
               child: (Scaffold(body: SafeArea(child: Text("det")))),
             ),
       ),
       GoRoute(
-        path: PageRoute.login,
+        path: PageRouteName.login,
         pageBuilder:
             (_, state) => MaterialPage(
               child: (Scaffold(body: SafeArea(child: Text("login")))),
             ),
       ),
       GoRoute(
-        path: PageRoute.register,
+        path: PageRouteName.register,
         pageBuilder:
             (_, state) => MaterialPage(
               child: (Scaffold(body: SafeArea(child: Text("reg")))),
             ),
       ),
       GoRoute(
-        path: PageRoute.add,
+        path: PageRouteName.add,
         pageBuilder:
             (_, state) => MaterialPage(
               child: (Scaffold(body: SafeArea(child: Text("add")))),
             ),
       ),
       GoRoute(
-        path: PageRoute.onboarding,
-        pageBuilder:
-            (_, state) => MaterialPage(
-              child: (Scaffold(body: SafeArea(child: Text("onb")))),
-            ),
+        path: PageRouteName.onboarding,
+        pageBuilder: (_, state) => MaterialPage(child: OnboardingPage()),
       ),
       GoRoute(
-        path: PageRoute.splash,
-        pageBuilder: (_, state) {
-          Future.delayed(const Duration(seconds: 3), () {
-            // After 3 seconds, navigate to the home screen
-            _goRouter.go(PageRoute.home);
-          });
-          return MaterialPage(child: Text('splash'));
-        },
+        path: PageRouteName.splash,
+        pageBuilder:
+            (_, state) => MaterialPage(
+              child: SplashPage(preferencesHelper: preferencesHelper),
+            ),
       ),
     ],
-    redirect: (context, state) async {
-      final user = await preferencesHelper.getSavedUser();
-      final isFirstTime = await preferencesHelper.getIsFirstTime();
-      if (user != null) {
-        return PageRoute.home;
-      } else if (isFirstTime) {
-        return PageRoute.onboarding;
-      } else {
-        return PageRoute.login;
-      }
-    },
   );
 }
