@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snappy/common/constant/app_constant.dart';
 import 'package:snappy/data/models/model/model_login_result.dart';
 
 class PreferencesHelper {
@@ -10,6 +11,7 @@ class PreferencesHelper {
 
   static const isFirstTime = 'IS_FIRST_TIME';
   static const user = 'User';
+  static const language = 'Language';
 
   Future<LoginResult?> getSavedUser() async {
     final SharedPreferences prefs = await sharedPreferences;
@@ -39,5 +41,16 @@ class PreferencesHelper {
   Future<void> setFirstTime(bool value) async {
     final SharedPreferences prefs = await sharedPreferences;
     await prefs.setBool(isFirstTime, value);
+  }
+
+  Future<AppLanguage?> getLanguage() async {
+    final SharedPreferences prefs = await sharedPreferences;
+    return AppLanguage.values.firstWhere((e) =>
+    e.name == prefs.getString(language));
+  }
+
+  Future<void> setLanguage(AppLanguage newLanguage) async {
+    final SharedPreferences prefs = await sharedPreferences;
+    await prefs.setString(language, newLanguage.name);
   }
 }

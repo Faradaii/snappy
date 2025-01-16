@@ -9,9 +9,13 @@ import 'package:snappy/domain/usecases/auth_register_usecase.dart';
 import 'package:snappy/domain/usecases/story_add_usecase.dart';
 import 'package:snappy/domain/usecases/story_get_all_usecase.dart';
 import 'package:snappy/domain/usecases/story_get_detail_usecase.dart';
+import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
+import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
+import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
 
 import '../data/repositories/story_repository_impl.dart';
 import '../domain/repositories/story_repository.dart';
+import '../presentation/bloc/add_story/add_story_bloc.dart';
 
 final getIt = GetIt.instance;
 
@@ -26,7 +30,7 @@ void injectionInit() {
   // helper
   getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
 
-  // data layer
+  // DATA LAYER
   // datasource
   getIt.registerLazySingleton<StoryRemoteDataSource>(
     () => StoryRemoteDataSourceImpl(dio: getIt(), preferencesHelper: getIt()),
@@ -43,7 +47,7 @@ void injectionInit() {
     ),
   );
 
-  // domain layer
+  // DOMAIN LAYER
   // usecases
   getIt.registerLazySingleton(() => GetAllStory(getIt()));
   getIt.registerLazySingleton(() => GetDetailStory(getIt()));
@@ -51,5 +55,12 @@ void injectionInit() {
   getIt.registerLazySingleton(() => LoginAuth(getIt()));
   getIt.registerLazySingleton(() => RegisterAuth(getIt()));
 
-  // presentation layer
+  // PRESENTATION LAYER
+  // bloc
+  getIt.registerLazySingleton(() => AddStoryBloc(addStoryUseCase: getIt()));
+  getIt.registerLazySingleton(() =>
+      DetailStoryBloc(storyGetDetailUseCase: getIt()));
+  getIt.registerLazySingleton(() => StoryBloc(storyGetAllUseCase: getIt()));
+  getIt.registerLazySingleton(() =>
+      SharedPreferenceBloc(preferencesHelper: getIt()));
 }

@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:snappy/di/injection.dart';
+import 'package:snappy/presentation/bloc/add_story/add_story_bloc.dart';
+import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
+import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
+import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
+
+import 'bloc_observer.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   injectionInit();
+  Bloc.observer = MyObserver();
+
   runApp(MultiBlocProvider(
     providers: [
+      BlocProvider(create: (context) => getIt<AddStoryBloc>()),
+      BlocProvider(create: (context) => getIt<StoryBloc>()),
+      BlocProvider(create: (context) => getIt<DetailStoryBloc>()),
+      BlocProvider(create: (context) => getIt<SharedPreferenceBloc>()),
     ],
     child: const MyApp(),
   ));
