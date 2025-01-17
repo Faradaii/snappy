@@ -89,15 +89,17 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   Future<LoginResponse> authLogin(LoginRequest loginData) async {
     final response = await dio.post('/login', data: loginData.toJson());
 
-    if (response.statusCode == 200) {
+    if (LoginResponse
+        .fromJson(response.data)
+        .error) {
+      throw Exception('Failed to login');
+    } else {
       LoginResult loginResult = LoginResult.fromJson(
         email: loginData.email,
         json: response.data['loginResult'],
       );
       await preferencesHelper.setSavedUser(loginResult.toEntity());
       return LoginResponse.fromJson(response.data);
-    } else {
-      throw Exception('Failed to login');
     }
   }
 
@@ -109,10 +111,12 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     );
     print(response);
 
-    if (response.statusCode == 200) {
-      return ApiMessageResponse.fromJson(jsonDecode(response.data));
-    } else {
+    if (ApiMessageResponse
+        .fromJson(response.data)
+        .error) {
       throw Exception('Failed to register');
+    } else {
+      return ApiMessageResponse.fromJson(response.data);
     }
   }
 

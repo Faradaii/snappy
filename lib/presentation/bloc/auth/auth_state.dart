@@ -15,8 +15,13 @@ class AuthLoadingState extends AuthState {
   const AuthLoadingState() : super(dataState: DataState.loading);
 }
 
-class AuthSuccessState extends AuthState {
-  const AuthSuccessState(String message)
+class AuthLoginSuccessState extends AuthState {
+  const AuthLoginSuccessState(String message)
+    : super(dataState: DataState.success, message: message);
+}
+
+class AuthRegisterSuccessState extends AuthState {
+  const AuthRegisterSuccessState(String message)
     : super(dataState: DataState.success, message: message);
 }
 

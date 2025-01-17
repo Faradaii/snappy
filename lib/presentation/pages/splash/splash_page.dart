@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
@@ -21,11 +24,15 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .surface,
       body: Stack(
         alignment: Alignment.bottomCenter,
         fit: StackFit.expand,
-        children: [SplashMain(), SplashFooter()],
+        children: [SplashFooter(), SplashMain()],
       ),
     );
   }
@@ -78,7 +85,8 @@ class SplashMain extends StatelessWidget {
             Text('Snappy', style: Theme
                 .of(context)
                 .textTheme
-                .displaySmall),
+                .displaySmall
+                ?.copyWith(fontWeight: FontWeight.bold)),
           ],
         );
       },
@@ -91,18 +99,51 @@ class SplashFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Text('from', style: Theme.of(context).textTheme.labelLarge),
-        Text(
-          'Faradaii',
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            color: Theme.of(context).colorScheme.primary,
-          ),
+    return Stack(
+      alignment: Alignment.bottomCenter,
+      fit: StackFit.loose,
+      children: [
+        Positioned(
+            top: -300,
+            right: 20,
+            child: Transform.rotate(angle: pi / 6,
+                child: SvgPicture.asset(
+                  "assets/images/splash_ilust.svg", width: MediaQuery
+                    .of(context)
+                    .size
+                    .width + 200,))),
+        Positioned(
+            bottom: -200,
+            left: 240,
+            child: Transform.rotate(angle: 540,
+                child: SvgPicture.asset(
+                  "assets/images/splash_ilust.svg", width: MediaQuery
+                    .of(context)
+                    .size
+                    .width + 200,))),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text('from', style: Theme
+                .of(context)
+                .textTheme
+                .labelLarge),
+            Text(
+              'Faradaii',
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .headlineSmall!
+                  .copyWith(
+                color: Theme
+                    .of(context)
+                    .colorScheme
+                    .primary,
+              ),
+            ),
+            const SizedBox(height: 30),
+          ],
         ),
-        const SizedBox(height: 30),
       ],
     );
   }

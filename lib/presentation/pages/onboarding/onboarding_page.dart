@@ -194,6 +194,8 @@ class OnboardingSection extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
+                Flexible(child: SvgPicture.asset(onboardingData.image)),
+                const SizedBox(height: 40),
                 Text(
                   onboardingData.title,
                   textAlign: TextAlign.center,
@@ -201,8 +203,6 @@ class OnboardingSection extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 40),
-                Flexible(child: SvgPicture.asset(onboardingData.image)),
                 const SizedBox(height: 40),
                 Text(
                   onboardingData.desc,

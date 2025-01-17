@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/presentation/pages/login/login_page.dart';
+import 'package:snappy/presentation/pages/register/register_page.dart';
 
 import '../../presentation/pages/onboarding/onboarding_page.dart';
 import '../../presentation/pages/splash/splash_page.dart';
@@ -46,7 +47,7 @@ class AppRouter {
         path: PageRouteName.register,
         pageBuilder:
             (_, state) => MaterialPage(
-              child: (Scaffold(body: SafeArea(child: Text("reg")))),
+              child: RegisterPage(),
             ),
       ),
       GoRoute(

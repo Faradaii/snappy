@@ -13,6 +13,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   AuthBloc({required this.authLoginUseCase, required this.authRegisterUseCase})
     : super(AuthInitialState()) {
+    on<AuthInitEvent>((event, emit) => emit(const AuthInitialState()));
+
     on<AuthLoginEvent>((event, emit) async {
       emit(const AuthLoadingState());
       final result = await authLoginUseCase.execute(
@@ -22,7 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       print("result $result");
       result.fold(
         (failure) => emit(AuthErrorState(failure.message)),
-        (success) => emit(AuthSuccessState(success.message)),
+        (success) => emit(AuthLoginSuccessState(success.message)),
       );
     });
 
@@ -35,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       result.fold(
         (failure) => emit(AuthErrorState(failure.message)),
-        (success) => emit(AuthSuccessState(success.message)),
+        (success) => emit(AuthRegisterSuccessState(success.message)),
       );
     });
   }

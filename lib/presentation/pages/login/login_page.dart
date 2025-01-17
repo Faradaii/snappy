@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/auth/auth_bloc.dart';
 
+import '../../widgets/bottom_auth_text.dart';
 import '../../widgets/custom_text_field.dart';
 
 class LoginPage extends StatefulWidget {
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context,) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthSuccessState) {
+        if (state is AuthLoginSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.message!),
@@ -52,6 +53,11 @@ class _LoginPageState extends State<LoginPage> {
       },
       builder: (context, state) {
         return Scaffold(
+          bottomNavigationBar: BottomAuthText(title: "Don't have an account?",
+            body: "Create an account",
+            onPressed: () {
+              context.push(PageRouteName.register);
+            },),
           body: SafeArea(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(20),
@@ -65,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                     width: 150,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(
-                          100), // 100 untuk membuat gambar bulat
+                          100),
                       child: Image.asset(
                         "assets/snappy.png",
                         fit: BoxFit.cover,
@@ -77,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.max,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("Welcome to Snappy",
+                      Text("Welcome back to Snappy",
                           style: const TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.w600,
@@ -87,121 +93,105 @@ class _LoginPageState extends State<LoginPage> {
                               fontSize: 16, fontWeight: FontWeight.w200)),
                     ],
                   ),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      spacing: 10,
-                      children: [
-                        CustomTextField(
-                          controller: email,
-                          hintText: 'Email Address',
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please fill with your email.';
-                            }
-                            if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
-                                .hasMatch(value)) {
-                              return 'Invalid email.';
-                            }
-                            return null;
-                          },
-                        ),
-                        CustomTextField(
-                          controller: password,
-                          hintText: 'Password',
-                          obscureText: hidePassword,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please fill with your password.';
-                            }
-                            if (value.length < 8) {
-                              return 'Minimum 8 characters.';
-                            }
-                            return null;
-                          },
-                          onSuffixIconPressed: () {
-                            setState(() {
-                              hidePassword = !hidePassword;
-                            });
-                          },
-                          suffixIcon: Icon(
-                            hidePassword
-                                ? Icons.visibility_off
-                                : Icons.remove_red_eye,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        context.read<AuthBloc>().add(
-                            AuthLoginEvent(
-                                email: email!.text.trim(),
-                                password: password!.text.trim()));
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: Size(MediaQuery
-                          .of(context)
-                          .size
-                          .width, 50),
-                      backgroundColor: Theme
-                          .of(context)
-                          .colorScheme
-                          .primary,
-                    ),
-                    child: Text(
-                      'Login',
-                      style: TextStyle(
-                        color: Theme
-                            .of(context)
-                            .colorScheme
-                            .onPrimary,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
+                  _buildForm(),
+                  _buildAuthButton(state),
                 ],
               ),
             ),
-          ),
-          bottomNavigationBar: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Don't have an account? ",
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  decoration: TextDecoration.none,
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Poppins',
-                  height: 1.2,
-                ),
-              ),
-              TextButton(
-                onPressed: () {
-                  context.go(PageRouteName.register);
-                },
-                style: TextButton.styleFrom(
-                  shadowColor: Colors.transparent,
-                  overlayColor: Colors.transparent,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                ),
-                child: Text(
-                    "Create an account"
-                ),
-              ),
-            ],
           ),
         );
       },
     );
   }
+
+  Widget _buildForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        spacing: 10,
+        children: [
+          CustomTextField(
+            controller: email,
+            hintText: 'Email Address',
+            prefixIcon: Icon(Icons.email_rounded),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please fill with your email.';
+              }
+              if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                  .hasMatch(value)) {
+                return 'Invalid email.';
+              }
+              return null;
+            },
+          ),
+          CustomTextField(
+            controller: password,
+            hintText: 'Password',
+            obscureText: hidePassword,
+            prefixIcon: Icon(Icons.password_rounded),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please fill with your password.';
+              }
+              if (value.length < 8) {
+                return 'Minimum 8 characters.';
+              }
+              return null;
+            },
+            onSuffixIconPressed: () {
+              setState(() {
+                hidePassword = !hidePassword;
+              });
+            },
+            suffixIcon: Icon(
+              hidePassword
+                  ? Icons.visibility_off
+                  : Icons.remove_red_eye,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAuthButton(AuthState state) {
+    return ElevatedButton(
+      onPressed: () {
+        if (state is AuthLoadingState) {
+          null;
+        } else if (_formKey.currentState!.validate()) {
+          context.read<AuthBloc>().add(
+              AuthLoginEvent(
+                  email: email!.text.trim(),
+                  password: password!.text.trim()));
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        fixedSize: Size(MediaQuery
+            .of(context)
+            .size
+            .width, 50),
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .primary,
+      ),
+      child: state is AuthLoadingState ? CircularProgressIndicator(color: Theme
+          .of(context)
+          .colorScheme
+          .onPrimary) : Text(
+        'Login',
+        style: TextStyle(
+          color: Theme
+              .of(context)
+              .colorScheme
+              .onPrimary,
+          fontSize: 20,
+        ),
+      ),
+    );
+  }
+
+
 }

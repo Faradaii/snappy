@@ -5,6 +5,7 @@ class CustomTextField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
   final FormFieldValidator<String>? validator;
+  final Widget? prefixIcon;
   final Widget? suffixIcon;
   final VoidCallback? onSuffixIconPressed;
 
@@ -14,6 +15,7 @@ class CustomTextField extends StatelessWidget {
     required this.hintText,
     this.obscureText = false,
     this.validator,
+    this.prefixIcon,
     this.suffixIcon,
     this.onSuffixIconPressed,
   });
@@ -26,25 +28,38 @@ class CustomTextField extends StatelessWidget {
       validator: validator,
       decoration: InputDecoration(
         hintText: hintText,
+        prefixIcon: prefixIcon,
         suffixIcon:
             suffixIcon != null
                 ? IconButton(icon: suffixIcon!, onPressed: onSuffixIconPressed)
                 : null,
-        enabledBorder: const OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          borderSide: BorderSide(color: Colors.cyan, width: 0.0),
+          borderSide: BorderSide(color: Theme
+              .of(context)
+              .colorScheme
+              .primary, width: 0.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.cyan, width: 2),
+          borderSide: BorderSide(color: Theme
+              .of(context)
+              .colorScheme
+              .primary, width: 2),
         ),
-        errorBorder: const OutlineInputBorder(
+        errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          borderSide: BorderSide(color: Colors.red, width: 0.0),
+          borderSide: BorderSide(color: Theme
+              .of(context)
+              .colorScheme
+              .error, width: 0.0),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.red, width: 1),
+          borderSide: BorderSide(color: Theme
+              .of(context)
+              .colorScheme
+              .error, width: 1),
         ),
       ),
     );
