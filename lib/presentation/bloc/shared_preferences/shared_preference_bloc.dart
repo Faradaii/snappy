@@ -19,6 +19,7 @@ class SharedPreferenceBloc
         AppLanguage? language = await preferencesHelper.getLanguage();
         bool isFirstTime = await preferencesHelper.getIsFirstTime();
         User? savedUser = await preferencesHelper.getSavedUser();
+
         emit(SharedPreferenceLoadedState(language: language,
             isFirstTime: isFirstTime,
             savedUser: savedUser));

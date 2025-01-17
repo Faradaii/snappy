@@ -34,10 +34,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final brightness = View
-        .of(context)
-        .platformDispatcher
-        .platformBrightness;
     TextTheme textTheme = createTextTheme(
         context, "Poppins", "Plus Jakarta Sans");
 
@@ -45,7 +41,8 @@ class MyApp extends StatelessWidget {
     AppRouter appRouter = getIt<AppRouter>();
     return MaterialApp.router(
       routerConfig: appRouter.router,
-      theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+      theme: theme.light(),
+      darkTheme: theme.dark(),
     );
   }
 }

@@ -70,6 +70,7 @@ class StoryRepositoryImpl implements StoryRepository {
       final configRequest = StoriesRequest(
           page: page, size: size, location: location);
       final result = await storyRemoteDataSource.getStories(configRequest);
+      print('result ${result.message}');
       if (result.listStory != null) storyLocalDataSource
           .insertOrUpdateListStory(result.listStory ?? []);
       return Right(Success(message: result.message,

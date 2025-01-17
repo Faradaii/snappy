@@ -49,14 +49,14 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     print('Token yang digunakan: $token');
     if (token != null) {
       dio.options.headers['Authorization'] =
-      'Bearer $token'; // Set token di header
+      'Bearer $token';
     }
 
     if (!dio.interceptors.any((i) => i is InterceptorsWrapper)) {
       dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            options.headers['Authorization'] = 'Bearer $token';
+            print("token interceptor: $token");
             return handler.next(options);
           },
             onResponse: (response, handler) async {
@@ -99,6 +99,8 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
         json: response.data['loginResult'],
       );
       await preferencesHelper.setSavedUser(loginResult.toEntity());
+      dio.options.headers['Authorization'] = 'Bearer ${loginResult.token}';
+
       return LoginResponse.fromJson(response.data);
     }
   }
@@ -138,10 +140,9 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       '/stories',
       queryParameters: configRequest?.toJson(),
     );
-    print(response);
 
     if (response.statusCode == 200) {
-      return StoriesResponse.fromJson(jsonDecode(response.data));
+      return StoriesResponse.fromJson(response.data);
     } else {
       throw Exception('Failed to load stories');
     }

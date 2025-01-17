@@ -6,8 +6,8 @@ class Story extends Equatable {
   String description;
   String photoUrl;
   DateTime createdAt;
-  double lat;
-  double lon;
+  double? lat;
+  double? lon;
 
   Story({
     required this.id,
@@ -15,8 +15,8 @@ class Story extends Equatable {
     required this.description,
     required this.photoUrl,
     required this.createdAt,
-    required this.lat,
-    required this.lon,
+    this.lat,
+    this.lon,
   });
 
   @override

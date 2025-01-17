@@ -22,6 +22,7 @@ class PreferencesHelper {
     }
 
     User result = LoginResult.fromJson(json: json.decode(savedData)).toEntity();
+    print("$result DONE RESULT DATA");
     return result;
   }
 
@@ -30,7 +31,11 @@ class PreferencesHelper {
     return token;
   }
 
-  Future<void> setSavedUser(User newUser) async {
+  Future<void> setSavedUser(User? newUser) async {
+    if (newUser == null) {
+      await sharedPreferences.remove(userLoggedPref);
+      return;
+    }
     String user = jsonEncode(LoginResult(name: newUser.name,
         email: newUser.email,
         userId: newUser.userId,

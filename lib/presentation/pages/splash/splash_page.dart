@@ -43,6 +43,7 @@ class SplashMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<SharedPreferenceBloc>().add(SharedPreferenceInitEvent());
     return BlocConsumer<SharedPreferenceBloc, SharedPreferenceState>(
       listener: (BuildContext context, SharedPreferenceState state) async {
         if (state is SharedPreferenceErrorState) {
@@ -55,21 +56,18 @@ class SplashMain extends StatelessWidget {
           final user = state.savedUser;
           final isFirstTime = state.isFirstTime ?? false;
 
-          await Future.delayed(const Duration(seconds: 2), () {
+          await Future.delayed(const Duration(seconds: 5), () {
             if (user != null) {
-              context.go(PageRouteName.home);
+              if (context.mounted) context.go(PageRouteName.home);
             } else if (isFirstTime) {
-              context.go(PageRouteName.onboarding);
+              if (context.mounted) context.go(PageRouteName.onboarding);
             } else {
-              context.go(PageRouteName.login);
+              if (context.mounted) context.go(PageRouteName.login);
             }
           });
         }
       },
       builder: (context, state) {
-        Future.delayed(const Duration(seconds: 2), () {
-          context.read<SharedPreferenceBloc>().add(SharedPreferenceInitEvent());
-        });
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,

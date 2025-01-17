@@ -15,7 +15,7 @@ class LoginResult {
     userId: json['userId'],
     name: json['name'],
     token: json['token'],
-        email: email ?? '',
+        email: email ?? json['email'] ?? '',
   );
 
   Map<String, dynamic> toJson() => {

@@ -40,6 +40,7 @@ class DatabaseHelper {
         id TEXT PRIMARY KEY,
         name TEXT,
         description TEXT,
+        photoUrl TEXT,
         createdAt TEXT,
         lat TEXT,
         lon TEXT

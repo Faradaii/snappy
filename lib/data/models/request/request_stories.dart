@@ -5,9 +5,11 @@ class StoriesRequest {
 
   StoriesRequest({this.page, this.size, this.location});
 
-  Map<String, dynamic> toJson() => {
-    'page': page,
-    'size': size,
-    'location': location,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    if (page != null) data['page'] = page;
+    if (size != null) data['size'] = size;
+    if (location != null) data['location'] = location;
+    return data;
+  }
 }

@@ -23,7 +23,7 @@ class SharedPreferenceSetIsFirstTimeEvent extends SharedPreferenceEvent {
 class SharedPreferenceGetSavedUserEvent extends SharedPreferenceEvent {}
 
 class SharedPreferenceSetSavedUserEvent extends SharedPreferenceEvent {
-  final User userEntity;
+  final User? userEntity;
 
   SharedPreferenceSetSavedUserEvent(this.userEntity);
 }
