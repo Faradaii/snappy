@@ -14,7 +14,8 @@ abstract class StoryRepository {
   Future<Either<Failure, Success<String>>> addStory(String description,
       List<int> photo, double? lat, double? lon);
 
-  Future<Either<Failure, Success<List<Story>>>> getStories(int? page, int? size,
+  Future<Either<Failure, Success<List<Story>>>> getStories(bool? forceRefresh,
+      int? page, int? size,
       int? location);
   Future<Either<Failure, Success<Story>>> getDetailStory(String id);
 }

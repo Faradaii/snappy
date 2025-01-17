@@ -4,6 +4,8 @@ import 'package:snappy/presentation/pages/home/home_page.dart';
 import 'package:snappy/presentation/pages/login/login_page.dart';
 import 'package:snappy/presentation/pages/register/register_page.dart';
 
+import '../../presentation/pages/add/add_page.dart';
+import '../../presentation/pages/detail/detail_page.dart';
 import '../../presentation/pages/onboarding/onboarding_page.dart';
 import '../../presentation/pages/splash/splash_page.dart';
 
@@ -33,15 +35,18 @@ class AppRouter {
       GoRoute(
         path: PageRouteName.detail,
         pageBuilder:
-            (_, state) => MaterialPage(
-              child: (Scaffold(body: SafeArea(child: Text("det")))),
-            ),
+            (_, state) {
+          final storyId = state.extra as String;
+          return MaterialPage(
+            child: DetailPage(storyId: storyId),
+          );
+        }
       ),
       GoRoute(
         path: PageRouteName.login,
         pageBuilder:
             (_, state) => MaterialPage(
-              child: (Scaffold(body: LoginPage())),
+              child: LoginPage(),
             ),
       ),
       GoRoute(
@@ -55,12 +60,15 @@ class AppRouter {
         path: PageRouteName.add,
         pageBuilder:
             (_, state) => MaterialPage(
-              child: (Scaffold(body: SafeArea(child: Text("add")))),
+              child: AddPage(),
             ),
       ),
       GoRoute(
         path: PageRouteName.onboarding,
-        pageBuilder: (_, state) => MaterialPage(child: OnboardingPage()),
+        pageBuilder: (_, state) =>
+            MaterialPage(
+                child: OnboardingPage()
+            ),
       ),
       GoRoute(
         path: PageRouteName.splash,

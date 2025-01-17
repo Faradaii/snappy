@@ -15,6 +15,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
     on<GetAllStoryEvent>((event, emit) async {
       emit(const StoryLoadingState());
       final result = await storyGetAllUseCase.execute(
+        event.forceRefresh,
         event.page,
         event.size,
         event.location,
@@ -24,7 +25,8 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
         (success) =>
             success.data!.isEmpty
                 ? emit(const StoryEmptyState())
-                : emit(StorySuccessState(success.data!)),
+                : emit(StorySuccessState(
+                listStory: success.data!, message: success.message)),
       );
     });
   }

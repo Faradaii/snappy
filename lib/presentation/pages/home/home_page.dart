@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
 
@@ -19,10 +18,10 @@ class HomePage extends StatelessWidget {
     context.read<StoryBloc>().add(GetAllStoryEvent());
     return BlocConsumer<StoryBloc, StoryState>(
         listener: (BuildContext context, StoryState state) {
-          if (state is StoryErrorState) {
+          if (state is StoryErrorState || state is StorySuccessState) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.errorMessage!),
+                content: Text(state.message!),
               ),
             );
           }
@@ -61,12 +60,18 @@ class HomePage extends StatelessWidget {
                     .onPrimary,),
               ),
               body: SafeArea(
-                  child:
-                  state is StorySuccessState
-                      ? _buildListStory(context, state.listStory)
-                      : state is StoryErrorState
-                      ? Center(child: Text(state.errorMessage ?? 'Error'))
-                      : const Center(child: CircularProgressIndicator())));
+                child: RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<StoryBloc>().add(
+                          GetAllStoryEvent(forceRefresh: true));
+                    },
+                    child:
+                    state is StorySuccessState
+                        ? _buildListStory(context, state.listStory)
+                        : state is StoryErrorState
+                        ? Center(child: Text(state.message ?? 'Error'))
+                        : const Center(child: CircularProgressIndicator())),
+              ));
         }
     );
   }
@@ -131,12 +136,13 @@ class HomePage extends StatelessWidget {
                     if (snapshot.connectionState == ConnectionState.waiting ||
                         snapshot.connectionState == ConnectionState.none) {
                       return SizedBox(
-                        height: size, width: size, child: Shimmer.fromColors(
-                        direction: ShimmerDirection.ltr,
-                        baseColor: Colors.grey.shade300,
-                        highlightColor: Colors.grey.shade500,
-                        child: Container(),
-                      ),);
+                          height: size,
+                          width: size,
+                          child: Center(
+                              child: CircularProgressIndicator(color: Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .primary)));
                     }
 
                     if (snapshot.hasData) {
@@ -246,10 +252,14 @@ class HomePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                          child: Image.network(
-                              "https://avatar.iran.liara.run/username?username=${state
-                                  .savedUser?.name}",
-                              width: 80)),
+                        child: _buildImage(
+                            url: "https://avatar.iran.liara.run/username?username=${state
+                                .savedUser?.name}",
+                            context: context,
+                            isCircle: true,
+                            size: 60
+                        ),
+                      ),
                       Expanded(
                         flex: 0,
                         child: Column(

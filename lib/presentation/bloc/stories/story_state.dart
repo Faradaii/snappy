@@ -2,9 +2,9 @@ part of 'story_bloc.dart';
 
 sealed class StoryState {
   final DataState dataState;
-  final String? errorMessage;
+  final String? message;
 
-  const StoryState({required this.dataState, this.errorMessage});
+  const StoryState({required this.dataState, this.message});
 }
 
 final class StoryInitialState extends StoryState {
@@ -18,7 +18,8 @@ final class StoryLoadingState extends StoryState {
 final class StorySuccessState extends StoryState {
   final List<Story> listStory;
 
-  const StorySuccessState(this.listStory) : super(dataState: DataState.success);
+  const StorySuccessState({required this.listStory, super.message})
+    : super(dataState: DataState.success);
 }
 
 final class StoryEmptyState extends StoryState {
@@ -26,6 +27,6 @@ final class StoryEmptyState extends StoryState {
 }
 
 final class StoryErrorState extends StoryState {
-  const StoryErrorState(String errorMessage)
-    : super(dataState: DataState.error, errorMessage: errorMessage);
+  const StoryErrorState(String message)
+    : super(dataState: DataState.error, message: message);
 }

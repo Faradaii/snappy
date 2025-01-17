@@ -17,7 +17,9 @@ class DetailStoryBloc extends Bloc<DetailStoryEvent, DetailStoryState> {
       final result = await storyGetDetailUseCase.execute(event.id);
       result.fold(
         (failure) => emit(DetailStoryErrorState(failure.message)),
-        (success) => emit(DetailStorySuccessState(success.data!)),
+            (success) =>
+            emit(DetailStorySuccessState(
+                detailStory: success.data!, message: success.message)),
       );
     });
   }

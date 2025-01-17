@@ -41,9 +41,9 @@ class DatabaseHelper {
         name TEXT,
         description TEXT,
         photoUrl TEXT,
-        createdAt TEXT,
-        lat TEXT,
-        lon TEXT
+        createdAt DATE,
+        lat REAL,
+        lon REAL
       );
     ''');
   }
@@ -102,7 +102,8 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getStories() async {
     final db = await database;
-    final List<Map<String, dynamic>> results = await db!.query(_tblSnappy);
+    final List<Map<String, dynamic>> results = await db!.query(
+      _tblSnappy, orderBy: 'createdAt DESC',);
 
     return results;
   }

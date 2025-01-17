@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class DateUtil {
   static String timeAgoSinceDate(DateTime date, {bool numericDates = true}) {
     final Duration difference = DateTime.now().difference(date);
@@ -28,5 +30,10 @@ class DateUtil {
       final int years = (difference.inDays / 365).floor();
       return years == 1 ? '1 year ago' : '$years years ago';
     }
+  }
+
+  static String dateTimeToString(DateTime dateTime) {
+    DateTime localDate = dateTime.toLocal();
+    return DateFormat("dd MMM yyyy • HH.mm").format(localDate);
   }
 }

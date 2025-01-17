@@ -2,9 +2,9 @@ part of 'detail_story_bloc.dart';
 
 sealed class DetailStoryState {
   final DataState dataState;
-  final String? errorMessage;
+  final String? message;
 
-  const DetailStoryState({required this.dataState, this.errorMessage});
+  const DetailStoryState({required this.dataState, this.message});
 }
 
 final class DetailStoryInitialState extends DetailStoryState {
@@ -18,7 +18,7 @@ final class DetailStoryLoadingState extends DetailStoryState {
 final class DetailStorySuccessState extends DetailStoryState {
   final Story detailStory;
 
-  const DetailStorySuccessState(this.detailStory)
+  const DetailStorySuccessState({required this.detailStory, super.message})
     : super(dataState: DataState.success);
 }
 
@@ -27,6 +27,6 @@ final class DetailStoryEmptyState extends DetailStoryState {
 }
 
 final class DetailStoryErrorState extends DetailStoryState {
-  const DetailStoryErrorState(String errorMessage)
-    : super(dataState: DataState.error, errorMessage: errorMessage);
+  const DetailStoryErrorState(String message)
+    : super(dataState: DataState.error, message: message);
 }

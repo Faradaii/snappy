@@ -128,7 +128,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     print(response);
 
     if (response.statusCode == 200) {
-      return StoryDetailResponse.fromJson(jsonDecode(response.data));
+      return StoryDetailResponse.fromJson(response.data);
     } else {
       throw Exception('Failed to load story');
     }
