@@ -24,3 +24,10 @@ final class AddStoryErrorState extends AddStoryState {
   const AddStoryErrorState(String message)
     : super(dataState: DataState.error, message: message);
 }
+
+final class AddStoryImagePickState extends AddStoryState {
+  final String? imagePath;
+
+  const AddStoryImagePickState({this.imagePath})
+    : super(dataState: DataState.success);
+}

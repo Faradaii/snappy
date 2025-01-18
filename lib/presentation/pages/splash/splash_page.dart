@@ -46,13 +46,8 @@ class SplashMain extends StatelessWidget {
     context.read<SharedPreferenceBloc>().add(SharedPreferenceInitEvent());
     return BlocConsumer<SharedPreferenceBloc, SharedPreferenceState>(
       listener: (BuildContext context, SharedPreferenceState state) async {
-        if (state is SharedPreferenceErrorState) {
-          print(state.errorMessage);
-        }
         if (state is SharedPreferenceLoadedState) {
           if (!context.mounted) return;
-          print('State Loaded: User - ${state.savedUser}, isFirstTime - ${state
-              .isFirstTime}');
           final user = state.savedUser;
           final isFirstTime = state.isFirstTime ?? false;
 

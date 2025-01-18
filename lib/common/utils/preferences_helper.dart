@@ -16,13 +16,11 @@ class PreferencesHelper {
 
   Future<User?> getSavedUser() async {
     final savedData = sharedPreferences.getString(userLoggedPref);
-    print("$savedData DONE GET DATA");
     if (savedData == null || savedData.isEmpty) {
       return null;
     }
 
     User result = LoginResult.fromJson(json: json.decode(savedData)).toEntity();
-    print("$result DONE RESULT DATA");
     return result;
   }
 

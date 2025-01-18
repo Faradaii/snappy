@@ -21,7 +21,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         event.email,
         event.password,
       );
-      print("result $result");
       result.fold(
         (failure) => emit(AuthErrorState(failure.message)),
         (success) => emit(AuthLoginSuccessState(success.message)),

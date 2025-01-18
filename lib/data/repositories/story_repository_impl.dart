@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:snappy/common/generic/failure.dart';
@@ -11,7 +12,6 @@ import 'package:snappy/domain/repositories/story_repository.dart';
 
 import '../datasources/story_local_datasource.dart';
 import '../datasources/story_remote_datasource.dart';
-import '../models/model/model_story.dart';
 import '../models/request/request_register.dart';
 
 class StoryRepositoryImpl implements StoryRepository {
@@ -34,7 +34,7 @@ class StoryRepositoryImpl implements StoryRepository {
       final result = await storyRemoteDataSource.addStory(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to add story"));
     }
   }
 
@@ -44,7 +44,7 @@ class StoryRepositoryImpl implements StoryRepository {
       final localResult = await storyLocalDataSource.getStoryById(id);
       if (localResult != null) {
         return Right(Success(
-          message: 'Load from local-> detail story',
+          message: 'Loaded',
           data: localResult.toEntity(),
         ));
       }
@@ -52,7 +52,7 @@ class StoryRepositoryImpl implements StoryRepository {
       return Right(
           Success(message: result.message, data: result.story?.toEntity()));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to load"));
     }
   }
 
@@ -62,28 +62,25 @@ class StoryRepositoryImpl implements StoryRepository {
       int? size,
       int? location) async {
     try {
-      List<StoryModel> result = [];
-      result = await storyLocalDataSource.getStories();
-
-      if (forceRefresh != null || forceRefresh == true || result.isEmpty) {
-        final configRequest = StoriesRequest(
-            page: page, size: size, location: location);
-        final apiResult = await storyRemoteDataSource.getStories(configRequest);
-        print('apiResult ${apiResult.message}');
-        if (apiResult.listStory != null) {
-          storyLocalDataSource
-              .insertOrUpdateListStory(apiResult.listStory ?? []);
-        }
-        return Right(Success(message: apiResult.message,
-            data: apiResult.listStory?.map((e) => e.toEntity()).toList()));
-      } else {
+      final configRequest = StoriesRequest(
+          page: page, size: size, location: location);
+      final apiResult = await storyRemoteDataSource.getStories(configRequest);
+      if (apiResult.listStory != null) {
+        storyLocalDataSource
+            .insertOrUpdateListStory(apiResult.listStory ?? []);
+      }
+      return Right(Success(message: apiResult.message,
+          data: apiResult.listStory?.map((e) => e.toEntity()).toList()));
+    } catch (e) {
+      if (e is SocketException || e is TimeoutException || e is HttpException) {
+        final localResult = await storyLocalDataSource.getStories();
         return Right(Success(
           message: 'Load from local',
-          data: result.map((e) => e.toEntity()).toList(),
+          data: localResult.map((e) => e.toEntity()).toList(),
         ));
+      } else {
+        return Left(Failure("Failed to load"));
       }
-    } catch (e) {
-      return Left(Failure(e.toString()));
     }
   }
 
@@ -95,7 +92,7 @@ class StoryRepositoryImpl implements StoryRepository {
       final result = await storyRemoteDataSource.authLogin(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to login"));
     }
   }
 
@@ -109,7 +106,7 @@ class StoryRepositoryImpl implements StoryRepository {
       final result = await storyRemoteDataSource.authRegister(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to register"));
     }
   }
 }

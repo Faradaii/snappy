@@ -7,6 +7,7 @@ class CustomTextField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final int? maxLines;
   final VoidCallback? onSuffixIconPressed;
 
   const CustomTextField({
@@ -14,6 +15,7 @@ class CustomTextField extends StatelessWidget {
     required this.controller,
     required this.hintText,
     this.obscureText = false,
+    this.maxLines,
     this.validator,
     this.prefixIcon,
     this.suffixIcon,
@@ -26,6 +28,7 @@ class CustomTextField extends StatelessWidget {
       controller: controller,
       obscureText: obscureText,
       validator: validator,
+      maxLines: maxLines ?? 1,
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: prefixIcon,

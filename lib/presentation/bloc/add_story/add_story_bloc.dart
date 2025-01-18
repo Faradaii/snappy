@@ -24,5 +24,8 @@ class AddStoryBloc extends Bloc<AddStoryEvent, AddStoryState> {
         (success) => emit(AddStorySuccessState(success.message)),
       );
     });
+    on<AddStoryImagePickEvent>((event, emit) async {
+      emit(AddStoryImagePickState(imagePath: event.imagePath));
+    });
   }
 }

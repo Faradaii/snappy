@@ -17,9 +17,9 @@ class StoryLocalDataSourceImpl implements StoryLocalDataSource {
   Future<String> insertOrUpdateListStory(List<StoryModel> listStory) async {
     try {
       await databaseHelper.insertOrUpdateListStory(listStory);
-      return 'Added to Story';
+      return 'Added to story';
     } catch (e) {
-      throw Exception(e.toString());
+      return 'Fail to add story';
     }
   }
 

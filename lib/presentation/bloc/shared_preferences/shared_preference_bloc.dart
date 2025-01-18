@@ -24,7 +24,7 @@ class SharedPreferenceBloc
             isFirstTime: isFirstTime,
             savedUser: savedUser));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState("Failed to load shared preferences"));
       }
     });
     on<SharedPreferenceGetLanguageEvent>((event, emit) async {
@@ -32,7 +32,7 @@ class SharedPreferenceBloc
         AppLanguage? language = await preferencesHelper.getLanguage();
         emit(SharedPreferenceLoadedState(language: language));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState("Failed to load language preferences"));
       }
     });
     on<SharedPreferenceGetIsFirstTimeEvent>((event, emit) async {
@@ -40,7 +40,8 @@ class SharedPreferenceBloc
         bool isFirstTime = await preferencesHelper.getIsFirstTime();
         emit(SharedPreferenceLoadedState(isFirstTime: isFirstTime));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState(
+            "Failed to load first time preferences"));
       }
     });
     on<SharedPreferenceSetLanguageEvent>((event, emit) async {
@@ -48,7 +49,7 @@ class SharedPreferenceBloc
         await preferencesHelper.setLanguage(event.language);
         emit(SharedPreferenceLoadedState(language: event.language));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState("Failed to set shared preferences"));
       }
     });
     on<SharedPreferenceSetIsFirstTimeEvent>((event, emit) async {
@@ -56,7 +57,7 @@ class SharedPreferenceBloc
         await preferencesHelper.setFirstTime(false);
         emit(SharedPreferenceLoadedState(isFirstTime: false));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState("Failed to set shared preferences"));
       }
     });
     on<SharedPreferenceGetSavedUserEvent>((event, emit) async {
@@ -65,7 +66,8 @@ class SharedPreferenceBloc
             value) => value);
         emit(SharedPreferenceLoadedState(savedUser: user));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState(
+            "Failed to load saved user preferences"));
       }
     });
     on<SharedPreferenceSetSavedUserEvent>((event, emit) async {
@@ -73,7 +75,7 @@ class SharedPreferenceBloc
         await preferencesHelper.setSavedUser(event.userEntity);
         emit(SharedPreferenceLoadedState(savedUser: event.userEntity));
       } catch (e) {
-        emit(SharedPreferenceErrorState(e.toString()));
+        emit(SharedPreferenceErrorState("Failed to set shared preferences"));
       }
     });
   }

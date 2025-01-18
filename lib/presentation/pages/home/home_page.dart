@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,12 +11,22 @@ import '../../../common/utils/image_network_util.dart';
 import '../../../config/route/router.dart';
 import '../../bloc/shared_preferences/shared_preference_bloc.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    super.initState();
     context.read<StoryBloc>().add(GetAllStoryEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<StoryBloc, StoryState>(
         listener: (BuildContext context, StoryState state) {
           if (state is StoryErrorState || state is StorySuccessState) {
@@ -78,6 +89,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildListStory(BuildContext context, List<Story> listStory) {
     return ListView.builder(
+      shrinkWrap: false,
       itemCount: listStory.length,
       itemBuilder: (context, index) {
         return Column(
@@ -153,14 +165,15 @@ class HomePage extends StatelessWidget {
                       double adjustedHeight = imageHeight > 500
                           ? size
                           : imageHeight;
+                      double? computedHeight = !isHeightAuto &&
+                          (aspectRatio < 1.0) ? adjustedHeight : null;
 
-                      return Image.network(
-                        url,
+                      return CachedNetworkImage(
+                        key: Key(url),
+                        imageUrl: url,
                         fit: BoxFit.fitWidth,
                         width: isWidthInfinity ? double.infinity : size,
-                        height: isHeightAuto ? (aspectRatio < 1.0
-                            ? adjustedHeight
-                            : null) : size,
+                        height: computedHeight,
                         alignment: Alignment.topCenter,
                       );
                     }
@@ -176,6 +189,7 @@ class HomePage extends StatelessWidget {
   Widget _buildStoryItem(BuildContext context, List<Story> listStory,
       int index) {
     return InkWell(
+      key: Key(listStory[index].id),
       onTap: () =>
       {
         context.push(PageRouteName.detail, extra: listStory[index].id)

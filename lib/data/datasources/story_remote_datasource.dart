@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:snappy/data/models/model/model_login_result.dart';
 import 'package:snappy/data/models/request/request_add_story.dart';
@@ -46,7 +44,6 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
     }
 
     token = await preferencesHelper.getToken().then((value) => value);
-    print('Token yang digunakan: $token');
     if (token != null) {
       dio.options.headers['Authorization'] =
       'Bearer $token';
@@ -56,14 +53,9 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       dio.interceptors.add(
         InterceptorsWrapper(
           onRequest: (options, handler) {
-            print("token interceptor: $token");
             return handler.next(options);
           },
             onResponse: (response, handler) async {
-              if (response.statusCode == 401) {
-                print(response.data);
-              }
-              print(response.toString());
               return handler.next(response);
             }),
       );
@@ -71,17 +63,19 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   }
 
   @override
-  Future<ApiMessageResponse> addStory(AddStoryRequest newStory) async {
-    final response = await dio.post(
+  Future<ApiMessageResponse> addStory(AddStoryRequest newStory) async { {
+    FormData newStoryData = FormData.fromMap(newStory.toJson())final response = await dio.post(
       '/stories',
-      data: newStory.toJson(),
+      options: Options(headers: {'Content-Type': 'multipart/form-data'}),
+      data: newStoryData,
     );
-    print(response);
 
-    if (response.statusCode == 200) {
-      return ApiMessageResponse.fromJson(jsonDecode(response.data));
-    } else {
+    if (ApiMessageResponse
+        .fromJson(response.data)
+        .error) {
       throw Exception('Failed to add story');
+    } else {
+      return ApiMessageResponse.fromJson(response.data);
     }
   }
 
@@ -111,7 +105,6 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       '/register',
       data: registerData.toJson(),
     );
-    print(response);
 
     if (ApiMessageResponse
         .fromJson(response.data)
@@ -125,7 +118,6 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   @override
   Future<StoryDetailResponse> getDetailStory(String id) async {
     final response = await dio.get('/stories/$id');
-    print(response);
 
     if (response.statusCode == 200) {
       return StoryDetailResponse.fromJson(response.data);

@@ -15,3 +15,9 @@ class AddStorySubmitEvent extends AddStoryEvent {
     this.lon,
   });
 }
+
+class AddStoryImagePickEvent extends AddStoryEvent {
+  final String imagePath;
+
+  AddStoryImagePickEvent(this.imagePath);
+}
