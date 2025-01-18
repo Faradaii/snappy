@@ -55,16 +55,17 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
           onRequest: (options, handler) {
             return handler.next(options);
           },
-            onResponse: (response, handler) async {
-              return handler.next(response);
+          onResponse: (response, handler) async {
+            return handler.next(response);
             }),
       );
     }
   }
 
   @override
-  Future<ApiMessageResponse> addStory(AddStoryRequest newStory) async { {
-    FormData newStoryData = FormData.fromMap(newStory.toJson())final response = await dio.post(
+  Future<ApiMessageResponse> addStory(AddStoryRequest newStory) async {
+    FormData newStoryData = FormData.fromMap(newStory.toJson());
+    final response = await dio.post(
       '/stories',
       options: Options(headers: {'Content-Type': 'multipart/form-data'}),
       data: newStoryData,

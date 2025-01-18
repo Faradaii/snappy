@@ -52,6 +52,18 @@ class _AddPageState extends State<AddPage> {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text("Add Story", style: Theme
+                .of(context)
+                .textTheme
+                .titleLarge),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () {
+                context.pop();
+              },
+            ),
+          ),
           bottomNavigationBar: _buildUploadButton(state),
           body: SafeArea(
             child: Column(
@@ -77,9 +89,13 @@ class _AddPageState extends State<AddPage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildImagePickerButton(context, _onGalleryView(
-                            context), "Gallery"),
-                        _buildImagePickerButton(context, _onCameraView(context),
+                        _buildImagePickerButton(context, () async {
+                          _onGalleryView(
+                              context);
+                        }, "Gallery"),
+                        _buildImagePickerButton(context, () async {
+                          _onCameraView(context);
+                        },
                             "Camera"),
                       ],
                     ),
