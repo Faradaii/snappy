@@ -22,6 +22,10 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _loadStories();
+  }
+
+  void _loadStories() {
     context.read<StoryBloc>().add(GetAllStoryEvent());
   }
 
@@ -58,8 +62,11 @@ class _HomePageState extends State<HomePage> {
               ),
               drawer: _buildDrawer(context),
               floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  context.push(PageRouteName.add);
+                onPressed: () async {
+                  final shouldRefresh = await context.push(PageRouteName.add);
+                  if (shouldRefresh == true) {
+                    _loadStories();
+                  }
                 },
                 backgroundColor: Theme
                     .of(context)
@@ -158,22 +165,12 @@ class _HomePageState extends State<HomePage> {
                     }
 
                     if (snapshot.hasData) {
-                      double imageWidth = snapshot.data!.image.width.toDouble();
-                      double imageHeight = snapshot.data!.image.height
-                          .toDouble();
-                      double aspectRatio = imageWidth / imageHeight;
-                      double adjustedHeight = imageHeight > 500
-                          ? size
-                          : imageHeight;
-                      double? computedHeight = !isHeightAuto &&
-                          (aspectRatio < 1.0) ? adjustedHeight : null;
-
                       return CachedNetworkImage(
                         key: Key(url),
+                        cacheKey: url,
                         imageUrl: url,
                         fit: BoxFit.fitWidth,
                         width: isWidthInfinity ? double.infinity : size,
-                        height: computedHeight,
                         alignment: Alignment.topCenter,
                       );
                     }

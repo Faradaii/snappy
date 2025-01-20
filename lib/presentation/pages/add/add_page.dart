@@ -20,8 +20,8 @@ class AddPage extends StatefulWidget {
 
 class _AddPageState extends State<AddPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  late String imagePath = "";
 
+  String? imagePathState;
   TextEditingController? description;
 
   @override
@@ -47,7 +47,7 @@ class _AddPageState extends State<AddPage> {
                 content: Text(state.message!),
               )
           );
-          context.pop();
+          context.pop(true);
         }
       },
       builder: (context, state) {
@@ -71,7 +71,7 @@ class _AddPageState extends State<AddPage> {
               children: [
                 Expanded(
                   flex: 3,
-                  child: imagePath.isEmpty
+                  child: imagePathState?.isEmpty ?? true
                       ? const Align(
                     alignment: Alignment.center,
                     child: Icon(
@@ -143,6 +143,9 @@ class _AddPageState extends State<AddPage> {
         );
         if (cropped.path.isNotEmpty) imagePath = cropped.path;
       }
+      setState(() {
+        imagePathState = imagePath;
+      });
       if (context.mounted) context.read<AddStoryBloc>().add(
           AddStoryImagePickEvent(imagePath));
     }
@@ -178,6 +181,9 @@ class _AddPageState extends State<AddPage> {
         );
         if (cropped.path.isNotEmpty) imagePath = cropped.path;
       }
+      setState(() {
+        imagePathState = imagePath;
+      });
       if (context.mounted) context.read<AddStoryBloc>().add(
           AddStoryImagePickEvent(imagePath));
     }
@@ -185,15 +191,15 @@ class _AddPageState extends State<AddPage> {
 
   Widget _onShowImage() {
     return kIsWeb
-        ? Image.network(imagePath)
-        : Image.file(File(imagePath));
+        ? Image.network(imagePathState!)
+        : Image.file(File(imagePathState!));
   }
 
   _onUpload(
       {required BuildContext context, required String description, double? lat, double? lon}) async {
-    if (imagePath.isNotEmpty) {
+    if (imagePathState?.isNotEmpty ?? false) {
       try {
-        final compressedImage = await _compressImage(imagePath);
+        final compressedImage = await _compressImage(imagePathState!);
         if (context.mounted) {
           context.read<AddStoryBloc>().add(AddStorySubmitEvent(
             description: description,
@@ -241,7 +247,7 @@ class _AddPageState extends State<AddPage> {
           if (state is AddStoryLoadingState) {
             null;
           } else if (_formKey.currentState!.validate() &&
-              imagePath.isNotEmpty) {
+              imagePathState!.isNotEmpty) {
             _onUpload(context: context, description: description!.text.trim());
           }
         },
