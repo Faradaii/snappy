@@ -12,8 +12,16 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
 
   StoryBloc({required this.storyGetAllUseCase}) : super(StoryInitialState()) {
     on<GetAllStoryEvent>((event, emit) async {
-      emit(StoryLoadingState(
-          page: state.page ?? 0, size: state.size, listStory: state.listStory));
+      final resetPage = 0;
+      if (event.forceRefresh != null && event.forceRefresh == true) {
+        emit(StoryLoadingState(
+            page: resetPage,
+            size: state.size,
+            listStory: []));
+      } else {
+        emit(StoryLoadingState(
+            page: state.page ?? 0, size: state.size, listStory: state.listStory));
+      }
       final result = await storyGetAllUseCase.execute(
         event.forceRefresh,
         state.page ?? 0,

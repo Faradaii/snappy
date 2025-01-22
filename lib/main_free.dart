@@ -21,8 +21,8 @@ void main() async {
   Bloc.observer = MyObserver();
 
   FlavorConfig(
-    flavor: FlavorType.premium,
-    values: const FlavorValues(statusSubscription: "Premium Subscription"),
+    flavor: FlavorType.free,
+    values: const FlavorValues(statusSubscription: "Free Subscription"),
   );
 
   usePathUrlStrategy();

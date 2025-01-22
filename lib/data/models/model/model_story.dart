@@ -1,6 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 
+part 'model_story.g.dart';
+
+@JsonSerializable()
 class StoryModel extends Equatable {
   final String id;
   final String name;
@@ -20,34 +24,9 @@ class StoryModel extends Equatable {
     this.lon,
   });
 
-  factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
-        id: json['id'],
-        name: json['name'],
-        description: json['description'],
-        photoUrl: json['photoUrl'],
-        createdAt: json['createdAt'],
-        lat: json['lat'],
-        lon: json['lon'],
-      );
+  factory StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'id': id,
-      'name': name,
-      'description': description,
-      'photoUrl': photoUrl,
-      'createdAt': createdAt,
-    };
-
-    if (lat != null) {
-      data['lat'] = lat;
-    }
-    if (lon != null) {
-      data['lon'] = lon;
-    }
-
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$StoryModelToJson(this);
 
   Story toEntity() {
     return Story(

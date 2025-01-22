@@ -1,6 +1,10 @@
 import 'package:snappy/data/models/model/model_story.dart';
 import 'package:snappy/data/models/response/response_api_message.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'response_story_detail.g.dart';
+
+@JsonSerializable()
 class StoryDetailResponse extends ApiMessageResponse {
   final StoryModel? story;
 
@@ -10,20 +14,10 @@ class StoryDetailResponse extends ApiMessageResponse {
     this.story,
   });
 
-  factory StoryDetailResponse.fromJson(Map<String, dynamic> json) =>
-      StoryDetailResponse(
-        error: json['error'],
-        message: json['message'],
-        story:
-            json['story'] != null ? StoryModel.fromJson(json['story']) : null,
-      );
+  factory StoryDetailResponse.fromJson(Map<String, dynamic> json) => _$StoryDetailResponseFromJson(json);
 
   @override
-  Map<String, dynamic> toJson() => {
-        'error': error,
-        'message': message,
-        'story': story?.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$StoryDetailResponseToJson(this);
 
   @override
   List<Object?> get props => [error, message, story];
