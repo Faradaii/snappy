@@ -52,5 +52,12 @@
     "timeMonthsAgo": "{months}个月前",
     "timeYearAgo": "1年前",
     "timeYearsAgo": "{years}年前",
-    "dateTimeFormat": "yyyy年MMMdd日 • HH.mm"
+    "dateTimeFormat": "yyyy年MMMdd日 • HH.mm",
+    "successAddStory": "成功添加故事",
+    "failedAddStory": "哎呀，添加故事失败",
+    "successLogin": "登录成功",
+    "failedLogin": "哎呀，登录失败",
+    "successRegister": "注册成功",
+    "failedRegister": "哎呀，注册失败",
+     "noStory": "未找到故事"
 }

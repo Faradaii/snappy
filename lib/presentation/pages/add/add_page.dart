@@ -38,13 +38,13 @@ class _AddPageState extends State<AddPage> {
         if (state is AddStoryErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.failedAddStory),
             ),
           );
         }
         if (state is AddStorySuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(state.message!),
+            content: Text(AppLocalizations.of(context)!.successAddStory),
           ));
           context.pop(true);
         }

@@ -52,5 +52,12 @@
     "timeMonthsAgo": "{months} months ago",
     "timeYearAgo": "1 year ago",
     "timeYearsAgo": "{years} years ago",
-    "dateTimeFormat": "dd MMM yyyy • HH.mm"
+    "dateTimeFormat": "dd MMM yyyy • HH.mm",
+    "successAddStory": "Success Add Story",
+    "failedAddStory": "Oops, Failed Add Story",
+    "successLogin": "Success Login",
+    "failedLogin": "Oops, Failed to log you in",
+    "successRegister": "Success Register",
+    "failedRegister": "Oops, Failed to register you in",
+    "noStory": "No story found"
 }

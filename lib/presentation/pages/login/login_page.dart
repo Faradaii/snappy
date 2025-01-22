@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/auth/auth_bloc.dart';
+import 'package:snappy/presentation/widgets/rotating_widget.dart';
 
 import '../../../common/localizations/common.dart';
 import '../../widgets/bottom_auth_text.dart';
@@ -40,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is AuthLoginSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.successLogin),
             ),
           );
 
@@ -50,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is AuthErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.failedLogin),
             ),
           );
         }
@@ -73,14 +74,16 @@ class _LoginPageState extends State<LoginPage> {
                 spacing: 20,
                 children: [
                   FlagLanguage(),
-                  SizedBox(
-                    height: 150,
-                    width: 150,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.asset(
-                        "assets/snappy.png",
-                        fit: BoxFit.cover,
+                  RotatingWidget(
+                    widget: SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.asset(
+                          "assets/snappy.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
                   ),

@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
+import 'package:snappy/presentation/widgets/rotating_widget.dart';
 
 import '../../../common/localizations/common.dart';
 
@@ -65,12 +66,14 @@ class SplashMain extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            SizedBox(
-              height: 200,
-              width: 200,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Image.asset("assets/snappy.png", fit: BoxFit.cover),
+            RotatingWidget(
+              widget: SizedBox(
+                height: 200,
+                width: 200,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.asset("assets/snappy.png", fit: BoxFit.cover),
+                ),
               ),
             ),
             Text('Snappy',
