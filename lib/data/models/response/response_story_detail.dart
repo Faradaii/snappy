@@ -20,10 +20,10 @@ class StoryDetailResponse extends ApiMessageResponse {
 
   @override
   Map<String, dynamic> toJson() => {
-    'error': error,
-    'message': message,
-    'story': story?.toJson(),
-  };
+        'error': error,
+        'message': message,
+        'story': story?.toJson(),
+      };
 
   @override
   List<Object?> get props => [error, message, story];

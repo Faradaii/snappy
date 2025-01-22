@@ -5,7 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
+import 'package:snappy/presentation/widgets/flag_language.dart';
 
+import '../../../common/localizations/common.dart';
 import '../../../common/utils/date_util.dart';
 import '../../../common/utils/image_network_util.dart';
 import '../../../config/route/router.dart';
@@ -33,65 +35,65 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BlocConsumer<StoryBloc, StoryState>(
         listener: (BuildContext context, StoryState state) {
-          if (state is StoryErrorState || state is StorySuccessState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message!),
-              ),
-            );
-          }
-        },
-        builder: (BuildContext context, StoryState state) {
-          return Scaffold(
-              appBar: AppBar(
-                centerTitle: true,
-                elevation: 0,
-                title: Image.asset("assets/snappy.png", fit: BoxFit.fill,
-                  width: 60,
-                  height: 60,),
-                leading: Builder(
-                  builder: (context) {
-                    return IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                    );
+      if (state is StoryErrorState || state is StorySuccessState) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(state.message!),
+          ),
+        );
+      }
+    }, builder: (BuildContext context, StoryState state) {
+      return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            elevation: 0,
+            title: Image.asset(
+              "assets/snappy.png",
+              fit: BoxFit.fill,
+              width: 60,
+              height: 60,
+            ),
+            leading: Builder(
+              builder: (context) {
+                return IconButton(
+                  icon: const Icon(Icons.menu),
+                  onPressed: () {
+                    Scaffold.of(context).openDrawer();
                   },
-                ),
-              ),
-              drawer: _buildDrawer(context),
-              floatingActionButton: FloatingActionButton(
-                onPressed: () async {
-                  final shouldRefresh = await context.push(PageRouteName.add);
-                  if (shouldRefresh == true) {
-                    _loadStories();
-                  }
+                );
+              },
+            ),
+          ),
+          drawer: _buildDrawer(context),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () async {
+              final shouldRefresh = await context.push(PageRouteName.add);
+              if (shouldRefresh == true) {
+                _loadStories();
+              }
+            },
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(
+              CupertinoIcons.scribble,
+              color: Theme.of(context).colorScheme.onPrimary,
+            ),
+          ),
+          body: SafeArea(
+            child: RefreshIndicator(
+                onRefresh: () async {
+                  context
+                      .read<StoryBloc>()
+                      .add(GetAllStoryEvent(forceRefresh: true));
                 },
-                backgroundColor: Theme
-                    .of(context)
-                    .colorScheme
-                    .primary,
-                child: Icon(CupertinoIcons.scribble, color: Theme
-                    .of(context)
-                    .colorScheme
-                    .onPrimary,),
-              ),
-              body: SafeArea(
-                child: RefreshIndicator(
-                    onRefresh: () async {
-                      context.read<StoryBloc>().add(
-                          GetAllStoryEvent(forceRefresh: true));
-                    },
-                    child:
-                    state is StorySuccessState
-                        ? _buildListStory(context, state.listStory)
-                        : state is StoryErrorState
-                        ? Center(child: Text(state.message ?? 'Error'))
+                child: state is StorySuccessState
+                    ? _buildListStory(context, state.listStory)
+                    : state is StoryErrorState
+                        ? Center(
+                            child: Text(state.message ??
+                                AppLocalizations.of(context)!.error))
                         : const Center(child: CircularProgressIndicator())),
-              ));
-        }
-    );
+          ));
+    });
   }
 
   Widget _buildListStory(BuildContext context, List<Story> listStory) {
@@ -110,87 +112,80 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildNameAndDate(
-      {required BuildContext context, required String name, required DateTime dateCreated}) {
+      {required BuildContext context,
+      required String name,
+      required DateTime dateCreated}) {
     return Row(
       spacing: 5,
       children: [
-        Text(
-            name,
-            style: Theme
-                .of(context)
+        Text(name,
+            style: Theme.of(context)
                 .textTheme
                 .titleMedium
-                ?.copyWith(fontWeight: FontWeight.bold)
-        ),
-        Text(
-            '•',
-            style: Theme
-                .of(context)
+                ?.copyWith(fontWeight: FontWeight.bold)),
+        Text('•',
+            style: Theme.of(context)
                 .textTheme
                 .bodyMedium
-                ?.copyWith(fontWeight: FontWeight.bold)
-        ),
-        Text(
-            DateUtil.timeAgoSinceDate(dateCreated),
-            style: Theme
-                .of(context)
-                .textTheme
-                .bodySmall
-        ),
+                ?.copyWith(fontWeight: FontWeight.bold)),
+        Text(DateUtil.timeAgoSinceDate(context, dateCreated),
+            style: Theme.of(context).textTheme.bodySmall),
       ],
     );
   }
 
   Widget _buildImage(
-      {required String url, required BuildContext context, required double size, bool isCircle = false, bool isWidthInfinity = false, bool isHeightAuto = false}) {
+      {required String url,
+      required BuildContext context,
+      required double size,
+      bool isCircle = false,
+      bool isWidthInfinity = false}) {
     return ClipRRect(
         key: Key(url),
-        borderRadius: isCircle ? BorderRadius.circular(100) : BorderRadius
-            .circular(8),
-        child: Builder(
-            builder: (context) {
-              return FutureBuilder<ImageInfo>(
-                  future: ImageUtils.getImageNetworkInfo(url),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting ||
-                        snapshot.connectionState == ConnectionState.none) {
-                      return SizedBox(
-                          height: size,
-                          width: size,
-                          child: Center(
-                              child: CircularProgressIndicator(color: Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .primary)));
-                    }
+        borderRadius:
+            isCircle ? BorderRadius.circular(100) : BorderRadius.circular(8),
+        child: Builder(builder: (context) {
+          return FutureBuilder<ImageInfo>(
+              future: ImageUtils.getImageNetworkInfo(url),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting ||
+                    snapshot.connectionState == ConnectionState.none) {
+                  return SizedBox(
+                      height: size,
+                      width: size,
+                      child: Center(
+                          child: CircularProgressIndicator(
+                              color: Theme.of(context).colorScheme.primary)));
+                }
 
-                    if (snapshot.hasData) {
-                      return CachedNetworkImage(
-                        key: Key(url),
-                        cacheKey: url,
-                        imageUrl: url,
-                        fit: BoxFit.fitWidth,
-                        width: isWidthInfinity ? double.infinity : size,
-                        alignment: Alignment.topCenter,
-                      );
-                    }
+                if (snapshot.hasData) {
+                  return CachedNetworkImage(
+                    key: Key(url),
+                    cacheKey: url,
+                    imageUrl: url,
+                    fit: BoxFit.cover,
+                    width: isWidthInfinity ? double.infinity : size,
+                    height: size,
+                    alignment: Alignment.topCenter,
+                  );
+                }
 
-                    return SizedBox(height: size,
-                        child: Center(child: Text('Error loading image')));
-                  }
-              );
-            }
-        ));
+                return SizedBox(
+                    height: size,
+                    child: Center(
+                        child: Text(
+                      AppLocalizations.of(context)!.errorImage,
+                    )));
+              });
+        }));
   }
 
-  Widget _buildStoryItem(BuildContext context, List<Story> listStory,
-      int index) {
+  Widget _buildStoryItem(
+      BuildContext context, List<Story> listStory, int index) {
     return InkWell(
       key: Key(listStory[index].id),
       onTap: () =>
-      {
-        context.push(PageRouteName.detail, extra: listStory[index].id)
-      },
+          {context.push(PageRouteName.detail, extra: listStory[index].id)},
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Row(
@@ -198,8 +193,8 @@ class _HomePageState extends State<HomePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildImage(
-                url: "https://avatar.iran.liara.run/username?username=${listStory[index]
-                    .name}",
+                url:
+                    "https://avatar.iran.liara.run/username?username=${listStory[index].name}",
                 context: context,
                 isCircle: true,
                 size: 40),
@@ -212,18 +207,18 @@ class _HomePageState extends State<HomePage> {
                   _buildNameAndDate(
                       name: listStory[index].name,
                       dateCreated: listStory[index].createdAt,
-                      context: context
+                      context: context),
+                  Text(
+                    listStory[index].description,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  Text(listStory[index].description, maxLines: 3,
-                    overflow: TextOverflow.ellipsis,),
                   const SizedBox(height: 4),
                   if (listStory[index].photoUrl.isNotEmpty)
                     _buildImage(
                         url: listStory[index].photoUrl,
                         context: context,
-                        isHeightAuto: true,
-                        size: 400
-                    )
+                        size: 400)
                 ],
               ),
             ),
@@ -234,7 +229,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildDrawer(BuildContext context) {
-    context.read<SharedPreferenceBloc>().add(SharedPreferenceInitEvent());
     return BlocConsumer<SharedPreferenceBloc, SharedPreferenceState>(
       listener: (context, state) {
         if (state is SharedPreferenceLoadedState) {
@@ -246,29 +240,26 @@ class _HomePageState extends State<HomePage> {
       builder: (context, state) {
         if (state is SharedPreferenceLoadedState) {
           return Drawer(
-            backgroundColor: Theme
-                .of(context)
-                .colorScheme
-                .onSecondary,
+            backgroundColor: Theme.of(context).colorScheme.onSecondary,
             child: ListView(
               children: <Widget>[
                 DrawerHeader(
                   decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .colorScheme
-                        .primary,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      FlagLanguage(),
                       Expanded(
-                        child: _buildImage(
-                            url: "https://avatar.iran.liara.run/username?username=${state
-                                .savedUser?.name}",
-                            context: context,
-                            isCircle: true,
-                            size: 60
+                        child: AspectRatio(
+                          aspectRatio: 1,
+                          child: _buildImage(
+                              url:
+                                  "https://avatar.iran.liara.run/username?username=${state.savedUser?.name}",
+                              context: context,
+                              isCircle: true,
+                              size: 60),
                         ),
                       ),
                       Expanded(
@@ -280,27 +271,26 @@ class _HomePageState extends State<HomePage> {
                               height: 5,
                             ),
                             Text(
-                              state.savedUser?.name ?? 'User',
-                              style: Theme
-                                  .of(context)
+                              state.savedUser?.name ??
+                                  AppLocalizations.of(context)!.user,
+                              style: Theme.of(context)
                                   .textTheme
                                   .titleLarge!
                                   .copyWith(
-                                  color: Theme
-                                      .of(context)
-                                      .colorScheme
-                                      .onSecondary),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary),
                             ),
-                            Text(state.savedUser?.email ?? 'Email',
-                                style: Theme
-                                    .of(context)
+                            Text(
+                                state.savedUser?.email ??
+                                    AppLocalizations.of(context)!.emailAddress,
+                                style: Theme.of(context)
                                     .textTheme
                                     .titleSmall!
                                     .copyWith(
-                                    color: Theme
-                                        .of(context)
-                                        .colorScheme
-                                        .onSecondary)),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSecondary)),
                           ],
                         ),
                       ),
@@ -313,22 +303,19 @@ class _HomePageState extends State<HomePage> {
                       Container(
                           margin: const EdgeInsets.all(5),
                           child: const Icon(Icons.logout_outlined)),
-                      Text('Logout',
-                          style: Theme
-                              .of(context)
+                      Text(AppLocalizations.of(context)!.logout,
+                          style: Theme.of(context)
                               .textTheme
                               .titleMedium!
                               .copyWith(
-                              color:
-                              Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .primary)),
+                                  color:
+                                      Theme.of(context).colorScheme.primary)),
                     ],
                   ),
                   onTap: () {
-                    context.read<SharedPreferenceBloc>().add(
-                        SharedPreferenceSetSavedUserEvent(null));
+                    context
+                        .read<SharedPreferenceBloc>()
+                        .add(SharedPreferenceSetSavedUserEvent(null));
                   },
                 ),
               ],

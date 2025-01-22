@@ -30,7 +30,8 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   late final String? token;
 
   StoryRemoteDataSourceImpl({
-    required this.dio, required this.preferencesHelper,
+    required this.dio,
+    required this.preferencesHelper,
   }) {
     init();
   }
@@ -45,19 +46,16 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
 
     token = await preferencesHelper.getToken().then((value) => value);
     if (token != null) {
-      dio.options.headers['Authorization'] =
-      'Bearer $token';
+      dio.options.headers['Authorization'] = 'Bearer $token';
     }
 
     if (!dio.interceptors.any((i) => i is InterceptorsWrapper)) {
       dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            return handler.next(options);
-          },
-          onResponse: (response, handler) async {
-            return handler.next(response);
-            }),
+        InterceptorsWrapper(onRequest: (options, handler) {
+          return handler.next(options);
+        }, onResponse: (response, handler) async {
+          return handler.next(response);
+        }),
       );
     }
   }
@@ -71,9 +69,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       data: newStoryData,
     );
 
-    if (ApiMessageResponse
-        .fromJson(response.data)
-        .error) {
+    if (ApiMessageResponse.fromJson(response.data).error) {
       throw Exception('Failed to add story');
     } else {
       return ApiMessageResponse.fromJson(response.data);
@@ -84,9 +80,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   Future<LoginResponse> authLogin(LoginRequest loginData) async {
     final response = await dio.post('/login', data: loginData.toJson());
 
-    if (LoginResponse
-        .fromJson(response.data)
-        .error) {
+    if (LoginResponse.fromJson(response.data).error) {
       throw Exception('Failed to login');
     } else {
       LoginResult loginResult = LoginResult.fromJson(
@@ -107,9 +101,7 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       data: registerData.toJson(),
     );
 
-    if (ApiMessageResponse
-        .fromJson(response.data)
-        .error) {
+    if (ApiMessageResponse.fromJson(response.data).error) {
       throw Exception('Failed to register');
     } else {
       return ApiMessageResponse.fromJson(response.data);

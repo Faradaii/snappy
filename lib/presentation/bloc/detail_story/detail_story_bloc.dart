@@ -11,15 +11,14 @@ class DetailStoryBloc extends Bloc<DetailStoryEvent, DetailStoryState> {
   final GetDetailStory storyGetDetailUseCase;
 
   DetailStoryBloc({required this.storyGetDetailUseCase})
-    : super(const DetailStoryInitialState()) {
+      : super(const DetailStoryInitialState()) {
     on<GetDetailStoryEvent>((event, emit) async {
       emit(const DetailStoryLoadingState());
       final result = await storyGetDetailUseCase.execute(event.id);
       result.fold(
         (failure) => emit(DetailStoryErrorState(failure.message)),
-            (success) =>
-            emit(DetailStorySuccessState(
-                detailStory: success.data!, message: success.message)),
+        (success) => emit(DetailStorySuccessState(
+            detailStory: success.data!, message: success.message)),
       );
     });
   }

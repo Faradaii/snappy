@@ -7,7 +7,7 @@ class SharedPreferenceInitEvent extends SharedPreferenceEvent {}
 class SharedPreferenceGetLanguageEvent extends SharedPreferenceEvent {}
 
 class SharedPreferenceSetLanguageEvent extends SharedPreferenceEvent {
-  final AppLanguage language;
+  final Locale language;
 
   SharedPreferenceSetLanguageEvent(this.language);
 }

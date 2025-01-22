@@ -19,7 +19,7 @@ final class DetailStorySuccessState extends DetailStoryState {
   final Story detailStory;
 
   const DetailStorySuccessState({required this.detailStory, super.message})
-    : super(dataState: DataState.success);
+      : super(dataState: DataState.success);
 }
 
 final class DetailStoryEmptyState extends DetailStoryState {
@@ -28,5 +28,5 @@ final class DetailStoryEmptyState extends DetailStoryState {
 
 final class DetailStoryErrorState extends DetailStoryState {
   const DetailStoryErrorState(String message)
-    : super(dataState: DataState.error, message: message);
+      : super(dataState: DataState.error, message: message);
 }

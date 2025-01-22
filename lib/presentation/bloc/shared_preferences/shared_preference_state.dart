@@ -2,7 +2,7 @@ part of 'shared_preference_bloc.dart';
 
 sealed class SharedPreferenceState {
   final DataState dataState;
-  final AppLanguage? language;
+  final Locale? language;
   final bool? isFirstTime;
   final User? savedUser;
   final String? errorMessage;
@@ -17,7 +17,7 @@ sealed class SharedPreferenceState {
 
   SharedPreferenceState copyWith({
     DataState? dataState,
-    AppLanguage? language,
+    Locale? language,
     bool? isFirstTime,
     User? savedUser,
     String? errorMessage,
@@ -43,16 +43,13 @@ final class SharedPreferenceInitialState extends SharedPreferenceState {
 
 final class SharedPreferenceErrorState extends SharedPreferenceState {
   const SharedPreferenceErrorState(String errorMessage)
-    : super(dataState: DataState.error, errorMessage: errorMessage);
+      : super(dataState: DataState.error, errorMessage: errorMessage);
 }
 
 final class SharedPreferenceLoadedState extends SharedPreferenceState {
   const SharedPreferenceLoadedState(
-      {AppLanguage? language, bool? isFirstTime, User? savedUser})
-    : super(
-        dataState: DataState.success,
-        language: language,
-        isFirstTime: isFirstTime,
-    savedUser: savedUser,
-      );
+      {super.language, super.isFirstTime, super.savedUser})
+      : super(
+          dataState: DataState.success,
+        );
 }

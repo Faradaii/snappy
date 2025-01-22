@@ -19,7 +19,7 @@ final class StorySuccessState extends StoryState {
   final List<Story> listStory;
 
   const StorySuccessState({required this.listStory, super.message})
-    : super(dataState: DataState.success);
+      : super(dataState: DataState.success);
 }
 
 final class StoryEmptyState extends StoryState {
@@ -28,5 +28,5 @@ final class StoryEmptyState extends StoryState {
 
 final class StoryErrorState extends StoryState {
   const StoryErrorState(String message)
-    : super(dataState: DataState.error, message: message);
+      : super(dataState: DataState.error, message: message);
 }

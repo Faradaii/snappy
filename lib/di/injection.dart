@@ -25,7 +25,7 @@ final getIt = GetIt.instance;
 Future<void> injectionInit() async {
   // SharedPreferences
   getIt.registerLazySingletonAsync<SharedPreferences>(
-        () async => await SharedPreferences.getInstance(),
+    () async => await SharedPreferences.getInstance(),
   );
 
   // Dio
@@ -35,12 +35,12 @@ Future<void> injectionInit() async {
   await getIt.isReady<SharedPreferences>();
   getIt.registerLazySingleton<DatabaseHelper>(() => DatabaseHelper());
   getIt.registerLazySingleton<PreferencesHelper>(
-        () => PreferencesHelper(sharedPreferences: getIt()),
+    () => PreferencesHelper(sharedPreferences: getIt()),
   );
 
   // AppRouter
   getIt.registerLazySingleton<AppRouter>(
-        () => AppRouter(),
+    () => AppRouter(),
   );
 
   // DATA LAYER
@@ -71,11 +71,11 @@ Future<void> injectionInit() async {
   // PRESENTATION LAYER
   // bloc
   getIt.registerLazySingleton(() => AddStoryBloc(addStoryUseCase: getIt()));
-  getIt.registerLazySingleton(() =>
-      DetailStoryBloc(storyGetDetailUseCase: getIt()));
+  getIt.registerLazySingleton(
+      () => DetailStoryBloc(storyGetDetailUseCase: getIt()));
   getIt.registerLazySingleton(() => StoryBloc(storyGetAllUseCase: getIt()));
-  getIt.registerLazySingleton(() =>
-      SharedPreferenceBloc(preferencesHelper: getIt()));
-  getIt.registerLazySingleton(() =>
-      AuthBloc(authLoginUseCase: getIt(), authRegisterUseCase: getIt()));
+  getIt.registerLazySingleton(
+      () => SharedPreferenceBloc(preferencesHelper: getIt()));
+  getIt.registerLazySingleton(
+      () => AuthBloc(authLoginUseCase: getIt(), authRegisterUseCase: getIt()));
 }

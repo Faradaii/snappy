@@ -9,6 +9,7 @@ import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:snappy/presentation/bloc/add_story/add_story_bloc.dart';
 
+import '../../../common/localizations/common.dart';
 import '../../widgets/custom_text_field.dart';
 
 class AddPage extends StatefulWidget {
@@ -42,21 +43,17 @@ class _AddPageState extends State<AddPage> {
           );
         }
         if (state is AddStorySuccessState) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.message!),
-              )
-          );
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(state.message!),
+          ));
           context.pop(true);
         }
       },
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text("Add Story", style: Theme
-                .of(context)
-                .textTheme
-                .titleLarge),
+            title: Text(AppLocalizations.of(context)!.addStory,
+                style: Theme.of(context).textTheme.titleLarge),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
@@ -73,12 +70,12 @@ class _AddPageState extends State<AddPage> {
                   flex: 3,
                   child: imagePathState?.isEmpty ?? true
                       ? const Align(
-                    alignment: Alignment.center,
-                    child: Icon(
-                      Icons.image,
-                      size: 100,
-                    ),
-                  )
+                          alignment: Alignment.center,
+                          child: Icon(
+                            Icons.image,
+                            size: 100,
+                          ),
+                        )
                       : _onShowImage(),
                 ),
                 Expanded(
@@ -90,13 +87,11 @@ class _AddPageState extends State<AddPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _buildImagePickerButton(context, () async {
-                          _onGalleryView(
-                              context);
-                        }, "Gallery"),
+                          _onGalleryView(context);
+                        }, AppLocalizations.of(context)!.gallery),
                         _buildImagePickerButton(context, () async {
                           _onCameraView(context);
-                        },
-                            "Camera"),
+                        }, AppLocalizations.of(context)!.camera),
                       ],
                     ),
                   ),
@@ -121,33 +116,31 @@ class _AddPageState extends State<AddPage> {
 
     final ImagePicker imagePicker = ImagePicker();
 
-    final XFile? image = await imagePicker.pickImage(
-        source: ImageSource.gallery);
+    final XFile? image =
+        await imagePicker.pickImage(source: ImageSource.gallery);
 
     if (image != null) {
       var imagePath = image.path;
       if (isMobile) {
         final cropper = HLImagePicker();
         final cropped = await cropper.openCropper(image.path,
-            cropOptions: const HLCropOptions(
-                aspectRatioPresets: [
-                  CropAspectRatioPreset.original,
-                  CropAspectRatioPreset.square,
-                  CropAspectRatioPreset.ratio3x2,
-                  CropAspectRatioPreset.ratio4x3,
-                  CropAspectRatioPreset.ratio5x3,
-                  CropAspectRatioPreset.ratio5x4,
-                  CropAspectRatioPreset.ratio16x9,
-                ]
-            )
-        );
+            cropOptions: const HLCropOptions(aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio5x3,
+              CropAspectRatioPreset.ratio5x4,
+              CropAspectRatioPreset.ratio16x9,
+            ]));
         if (cropped.path.isNotEmpty) imagePath = cropped.path;
       }
       setState(() {
         imagePathState = imagePath;
       });
-      if (context.mounted) context.read<AddStoryBloc>().add(
-          AddStoryImagePickEvent(imagePath));
+      if (context.mounted) {
+        context.read<AddStoryBloc>().add(AddStoryImagePickEvent(imagePath));
+      }
     }
   }
 
@@ -159,33 +152,31 @@ class _AddPageState extends State<AddPage> {
 
     final ImagePicker imagePicker = ImagePicker();
 
-    final XFile? image = await imagePicker.pickImage(
-        source: ImageSource.camera);
+    final XFile? image =
+        await imagePicker.pickImage(source: ImageSource.camera);
 
     if (image != null) {
       var imagePath = image.path;
       if (isMobile) {
         final cropper = HLImagePicker();
         final cropped = await cropper.openCropper(image.path,
-            cropOptions: HLCropOptions(
-                aspectRatioPresets: [
-                  CropAspectRatioPreset.original,
-                  CropAspectRatioPreset.square,
-                  CropAspectRatioPreset.ratio3x2,
-                  CropAspectRatioPreset.ratio4x3,
-                  CropAspectRatioPreset.ratio5x3,
-                  CropAspectRatioPreset.ratio5x4,
-                  CropAspectRatioPreset.ratio16x9,
-                ]
-            )
-        );
+            cropOptions: HLCropOptions(aspectRatioPresets: [
+              CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio3x2,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.ratio5x3,
+              CropAspectRatioPreset.ratio5x4,
+              CropAspectRatioPreset.ratio16x9,
+            ]));
         if (cropped.path.isNotEmpty) imagePath = cropped.path;
       }
       setState(() {
         imagePathState = imagePath;
       });
-      if (context.mounted) context.read<AddStoryBloc>().add(
-          AddStoryImagePickEvent(imagePath));
+      if (context.mounted) {
+        context.read<AddStoryBloc>().add(AddStoryImagePickEvent(imagePath));
+      }
     }
   }
 
@@ -196,22 +187,26 @@ class _AddPageState extends State<AddPage> {
   }
 
   _onUpload(
-      {required BuildContext context, required String description, double? lat, double? lon}) async {
+      {required BuildContext context,
+      required String description,
+      double? lat,
+      double? lon}) async {
     if (imagePathState?.isNotEmpty ?? false) {
       try {
         final compressedImage = await _compressImage(imagePathState!);
         if (context.mounted) {
           context.read<AddStoryBloc>().add(AddStorySubmitEvent(
-            description: description,
-            photo: compressedImage,
-            lat: lat,
-            lon: lon,
-          ));
+                description: description,
+                photo: compressedImage,
+                lat: lat,
+                lon: lon,
+              ));
         }
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to upload image: $e')),
+            SnackBar(
+                content: Text(AppLocalizations.of(context)!.failedUploadImage)),
           );
         }
       }
@@ -252,50 +247,37 @@ class _AddPageState extends State<AddPage> {
           }
         },
         style: ElevatedButton.styleFrom(
-          fixedSize: Size(MediaQuery
-              .of(context)
-              .size
-              .width, 50),
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .primary,
+          fixedSize: Size(MediaQuery.of(context).size.width, 50),
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        child: state is AddStoryLoadingState ? CircularProgressIndicator(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onPrimary) : Text(
-          'Upload',
-          style: TextStyle(
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onPrimary,
-            fontSize: 20,
-          ),
-        ),
+        child: state is AddStoryLoadingState
+            ? CircularProgressIndicator(
+                color: Theme.of(context).colorScheme.onPrimary)
+            : Text(
+                AppLocalizations.of(context)!.upload,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  fontSize: 20,
+                ),
+              ),
       ),
     );
   }
 
-  Widget _buildImagePickerButton(BuildContext context,
-      void Function() onPressed,
-      String text) {
+  Widget _buildImagePickerButton(
+      BuildContext context, void Function() onPressed, String text) {
     return Expanded(
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme
-              .of(context)
-              .colorScheme
-              .primary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
         ),
-        child: Text(text, style: TextStyle(
-          color: Theme
-              .of(context)
-              .colorScheme
-              .onPrimary,),),
+        child: Text(
+          text,
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.onPrimary,
+          ),
+        ),
       ),
     );
   }
@@ -308,10 +290,10 @@ class _AddPageState extends State<AddPage> {
         child: CustomTextField(
           controller: description,
           maxLines: 8,
-          hintText: 'Description of your story...',
+          hintText: AppLocalizations.of(context)!.descriptionUploadStoryHint,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please fill the description.';
+              return AppLocalizations.of(context)!.pleaseFillDescription;
             }
             return null;
           },

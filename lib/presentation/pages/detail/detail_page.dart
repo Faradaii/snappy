@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
 
+import '../../../common/localizations/common.dart';
 import '../../../common/utils/date_util.dart';
 
 class DetailPage extends StatelessWidget {
@@ -26,7 +27,8 @@ class DetailPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text("Story", style: Theme.of(context).textTheme.titleLarge),
+            title: Text(AppLocalizations.of(context)!.story,
+                style: Theme.of(context).textTheme.titleLarge),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
@@ -36,10 +38,9 @@ class DetailPage extends StatelessWidget {
           ),
           body: SafeArea(
             child: SingleChildScrollView(
-              child:
-                  state is DetailStorySuccessState
-                      ? _buildDetailStory(context, state.detailStory)
-                      : state is DetailStoryErrorState
+              child: state is DetailStorySuccessState
+                  ? _buildDetailStory(context, state.detailStory)
+                  : state is DetailStoryErrorState
                       ? Center(child: Text(state.message!))
                       : const Center(child: CircularProgressIndicator()),
             ),
@@ -88,7 +89,7 @@ class DetailPage extends StatelessWidget {
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             Text(
-              DateUtil.timeAgoSinceDate(detailStory.createdAt),
+              DateUtil.timeAgoSinceDate(context, detailStory.createdAt),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ],
@@ -119,7 +120,7 @@ class DetailPage extends StatelessWidget {
             alignment: Alignment.topCenter,
           ),
         ),
-        Text(DateUtil.dateTimeToString(detailStory.createdAt)),
+        Text(DateUtil.dateTimeToString(context, detailStory.createdAt)),
       ],
     );
   }

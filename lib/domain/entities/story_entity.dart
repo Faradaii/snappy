@@ -1,15 +1,15 @@
 import 'package:equatable/equatable.dart';
 
 class Story extends Equatable {
-  String id;
-  String name;
-  String description;
-  String photoUrl;
-  DateTime createdAt;
-  double? lat;
-  double? lon;
+  final String id;
+  final String name;
+  final String description;
+  final String photoUrl;
+  final DateTime createdAt;
+  final double? lat;
+  final double? lon;
 
-  Story({
+  const Story({
     required this.id,
     required this.name,
     required this.description,
@@ -21,12 +21,12 @@ class Story extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    description,
-    photoUrl,
-    createdAt,
-    lat,
-    lon,
-  ];
+        id,
+        name,
+        description,
+        photoUrl,
+        createdAt,
+        lat,
+        lon,
+      ];
 }

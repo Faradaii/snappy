@@ -21,14 +21,14 @@ class StoryModel extends Equatable {
   });
 
   factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
-    id: json['id'],
-    name: json['name'],
-    description: json['description'],
-    photoUrl: json['photoUrl'],
-    createdAt: json['createdAt'],
-    lat: json['lat'],
-    lon: json['lon'],
-  );
+        id: json['id'],
+        name: json['name'],
+        description: json['description'],
+        photoUrl: json['photoUrl'],
+        createdAt: json['createdAt'],
+        lat: json['lat'],
+        lon: json['lon'],
+      );
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
@@ -63,12 +63,12 @@ class StoryModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    description,
-    photoUrl,
-    createdAt,
-    lat,
-    lon,
-  ];
+        id,
+        name,
+        description,
+        photoUrl,
+        createdAt,
+        lat,
+        lon,
+      ];
 }

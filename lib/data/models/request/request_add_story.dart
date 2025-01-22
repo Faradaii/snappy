@@ -16,9 +16,8 @@ class AddStoryRequest {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {
       'description': description,
-      'photo': MultipartFile.fromBytes(photo, filename: '${DateTime
-          .now()
-          .millisecondsSinceEpoch}.jpg'),
+      'photo': MultipartFile.fromBytes(photo,
+          filename: '${DateTime.now().millisecondsSinceEpoch}.jpg'),
     };
 
     if (lat != null) {

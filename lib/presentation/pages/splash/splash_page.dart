@@ -7,8 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
 
-class SplashPage extends StatefulWidget {
+import '../../../common/localizations/common.dart';
 
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   @override
@@ -16,19 +17,17 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-
   @override
   void initState() {
     super.initState();
+    BlocProvider.of<SharedPreferenceBloc>(context)
+        .add(SharedPreferenceInitEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .surface,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Stack(
         alignment: Alignment.bottomCenter,
         fit: StackFit.expand,
@@ -43,7 +42,6 @@ class SplashMain extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<SharedPreferenceBloc>().add(SharedPreferenceInitEvent());
     return BlocConsumer<SharedPreferenceBloc, SharedPreferenceState>(
       listener: (BuildContext context, SharedPreferenceState state) async {
         if (state is SharedPreferenceLoadedState) {
@@ -75,11 +73,11 @@ class SplashMain extends StatelessWidget {
                 child: Image.asset("assets/snappy.png", fit: BoxFit.cover),
               ),
             ),
-            Text('Snappy', style: Theme
-                .of(context)
-                .textTheme
-                .displaySmall
-                ?.copyWith(fontWeight: FontWeight.bold)),
+            Text('Snappy',
+                style: Theme.of(context)
+                    .textTheme
+                    .displaySmall
+                    ?.copyWith(fontWeight: FontWeight.bold)),
           ],
         );
       },
@@ -99,40 +97,31 @@ class SplashFooter extends StatelessWidget {
         Positioned(
             top: -300,
             right: 20,
-            child: Transform.rotate(angle: pi / 6,
+            child: Transform.rotate(
+                angle: pi / 6,
                 child: SvgPicture.asset(
-                  "assets/images/splash_ilust.svg", width: MediaQuery
-                    .of(context)
-                    .size
-                    .width + 200,))),
+                  "assets/images/splash_ilust.svg",
+                  width: MediaQuery.of(context).size.width + 200,
+                ))),
         Positioned(
             bottom: -200,
             left: 240,
-            child: Transform.rotate(angle: 540,
+            child: Transform.rotate(
+                angle: 540,
                 child: SvgPicture.asset(
-                  "assets/images/splash_ilust.svg", width: MediaQuery
-                    .of(context)
-                    .size
-                    .width + 200,))),
+                  "assets/images/splash_ilust.svg",
+                  width: MediaQuery.of(context).size.width + 200,
+                ))),
         Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Text('from', style: Theme
-                .of(context)
-                .textTheme
-                .labelLarge),
+            Text(AppLocalizations.of(context)!.from,
+                style: Theme.of(context).textTheme.labelLarge),
             Text(
               'Faradaii',
-              style: Theme
-                  .of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .primary,
-              ),
+              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
             ),
             const SizedBox(height: 30),
           ],

@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'dart:ui';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:snappy/common/constant/app_constant.dart';
 import 'package:snappy/data/models/model/model_login_result.dart';
 import 'package:snappy/domain/entities/user_entity.dart';
 
@@ -34,10 +34,12 @@ class PreferencesHelper {
       await sharedPreferences.remove(userLoggedPref);
       return;
     }
-    String user = jsonEncode(LoginResult(name: newUser.name,
-        email: newUser.email,
-        userId: newUser.userId,
-        token: newUser.token).toJson());
+    String user = jsonEncode(LoginResult(
+            name: newUser.name,
+            email: newUser.email,
+            userId: newUser.userId,
+            token: newUser.token)
+        .toJson());
     await sharedPreferences.setString(userLoggedPref, user);
   }
 
@@ -49,14 +51,18 @@ class PreferencesHelper {
     await sharedPreferences.setBool(isFirstTimePref, value);
   }
 
-  Future<AppLanguage?> getLanguage() async {
-    return AppLanguage.values.firstWhere((e) =>
-    e.name == sharedPreferences.getString(languageSelectedPref),
-      orElse: () => AppLanguage.en,
-    );
+  Future<Locale?> getLanguage() async {
+    return Locale(sharedPreferences.getString(languageSelectedPref) ?? 'en');
   }
 
-  Future<void> setLanguage(AppLanguage newLanguage) async {
-    await sharedPreferences.setString(languageSelectedPref, newLanguage.name);
+  Future<void> toggleLanguage() async {
+    Locale? locale = await getLanguage();
+    String newLanguage = locale?.languageCode == 'en' ? 'id' : 'en';
+    await sharedPreferences.setString(languageSelectedPref, newLanguage);
+  }
+
+  Future<void> setLanguage(Locale newLanguage) async {
+    await sharedPreferences.setString(
+        languageSelectedPref, newLanguage.languageCode);
   }
 }

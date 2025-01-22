@@ -51,5 +51,12 @@
     <string>Buka privasi ini untuk akses mikrofon.</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>Buka privasi ini untuk akses galeri foto.</string>
+    <key>CFBundleLocalizations</key>
+    <array>
+      <string>id</string>
+      <string>en</string>
+      <string>zh</string>
+      <string>ko</string>
+    </array>
 </dict>
 </plist>

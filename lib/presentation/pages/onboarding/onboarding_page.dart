@@ -8,7 +8,9 @@ import 'package:go_router/go_router.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
 import 'package:snappy/presentation/pages/onboarding/onboarding_data.dart';
 
+import '../../../common/localizations/common.dart';
 import '../../../config/route/router.dart';
+import '../../widgets/flag_language.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -38,7 +40,6 @@ class _OnboardingPageState extends State<OnboardingPage> {
     setState(() {
       onboardingData =
           data.map((item) => OnboardingData.fromJson(item)).toList();
-      ;
     });
   }
 
@@ -50,42 +51,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SharedPreferenceBloc, SharedPreferenceState>(
-      builder: (context, state) {
-        return Scaffold(
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: PageView.builder(
-                      controller: _controller,
-                      itemCount: 3,
-                      onPageChanged:
-                          (value) => setState(() => currentIndex = value),
-                      itemBuilder:
-                          (context, index) =>
-                              onboardingData.isEmpty
-                                  ? null
-                                  : OnboardingSection(
-                                    onboardingData: onboardingData.elementAt(
-                                      index,
-                                    ),
-                                  ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  _buildIndicator(context),
-                  const SizedBox(height: 20),
-                  _buildActionButton(context),
-                  _buildSkipButton(),
-                ],
+    return Scaffold(
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              FlagLanguage(),
+              Expanded(
+                child: PageView.builder(
+                  controller: _controller,
+                  itemCount: 3,
+                  onPageChanged: (value) =>
+                      setState(() => currentIndex = value),
+                  itemBuilder: (context, index) => onboardingData.isEmpty
+                      ? null
+                      : OnboardingSection(
+                          onboardingData: onboardingData.elementAt(
+                            index,
+                          ),
+                          index: index,
+                        ),
+                ),
               ),
-            ),
+              const SizedBox(height: 20),
+              _buildIndicator(context),
+              const SizedBox(height: 20),
+              _buildActionButton(context),
+              _buildSkipButton(),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -98,16 +95,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
           itemCount: 3,
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemBuilder:
-              (_, index) => Container(
-                margin: const EdgeInsets.symmetric(horizontal: 5),
-                width: currentIndex == index ? 20 : 10,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-              ),
+          itemBuilder: (_, index) => Container(
+            margin: const EdgeInsets.symmetric(horizontal: 5),
+            width: currentIndex == index ? 20 : 10,
+            height: 5,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary,
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
         ),
       ),
     );
@@ -125,17 +121,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
             );
           }
         },
-        style:
-            currentIndex == 2
-                ? TextButton.styleFrom(overlayColor: Colors.transparent)
-                : TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
+        style: currentIndex == 2
+            ? TextButton.styleFrom(overlayColor: Colors.transparent)
+            : TextButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              ),
         child: Text(
-          currentIndex == 2 ? '' : 'Next',
+          currentIndex == 2 ? '' : AppLocalizations.of(context)!.next,
           style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: Theme.of(context).colorScheme.onPrimary,
-          ),
+                color: Theme.of(context).colorScheme.onPrimary,
+              ),
         ),
       ),
     );
@@ -159,20 +154,20 @@ class _OnboardingPageState extends State<OnboardingPage> {
             curve: Curves.easeInOut,
           );
         },
-        style:
-            currentIndex == 2
-                ? TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                )
-                : null,
+        style: currentIndex == 2
+            ? TextButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
+              )
+            : null,
         child: Text(
-          currentIndex == 2 ? 'Start Snappy!' : 'Skip',
-          style:
-              currentIndex == 2
-                  ? Theme.of(context).textTheme.labelLarge?.copyWith(
+          currentIndex == 2
+              ? AppLocalizations.of(context)!.startSnappy
+              : AppLocalizations.of(context)!.skip,
+          style: currentIndex == 2
+              ? Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Theme.of(context).colorScheme.onPrimary,
                   )
-                  : null,
+              : null,
         ),
       ),
     );
@@ -181,8 +176,36 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
 class OnboardingSection extends StatelessWidget {
   final OnboardingData onboardingData;
+  final int index;
 
-  const OnboardingSection({super.key, required this.onboardingData});
+  const OnboardingSection(
+      {super.key, required this.onboardingData, required this.index});
+
+  String getOnboardingTitle(BuildContext context, int step) {
+    switch (step) {
+      case 0:
+        return AppLocalizations.of(context)!.onboardingTitleStep1;
+      case 1:
+        return AppLocalizations.of(context)!.onboardingTitleStep2;
+      case 2:
+        return AppLocalizations.of(context)!.onboardingTitleStep3;
+      default:
+        return '';
+    }
+  }
+
+  String getOnboardingDesc(BuildContext context, int step) {
+    switch (step) {
+      case 0:
+        return AppLocalizations.of(context)!.onboardingDescStep1;
+      case 1:
+        return AppLocalizations.of(context)!.onboardingDescStep2;
+      case 2:
+        return AppLocalizations.of(context)!.onboardingDescStep3;
+      default:
+        return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -197,15 +220,15 @@ class OnboardingSection extends StatelessWidget {
                 Flexible(child: SvgPicture.asset(onboardingData.image)),
                 const SizedBox(height: 40),
                 Text(
-                  onboardingData.title,
+                  getOnboardingTitle(context, index),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  onboardingData.desc,
+                  getOnboardingDesc(context, index),
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),

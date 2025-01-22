@@ -11,7 +11,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
   final GetAllStory storyGetAllUseCase;
 
   StoryBloc({required this.storyGetAllUseCase})
-    : super(const StoryInitialState()) {
+      : super(const StoryInitialState()) {
     on<GetAllStoryEvent>((event, emit) async {
       emit(const StoryLoadingState());
       final result = await storyGetAllUseCase.execute(
@@ -22,10 +22,9 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       );
       result.fold(
         (failure) => emit(StoryErrorState(failure.message)),
-        (success) =>
-            success.data!.isEmpty
-                ? emit(const StoryEmptyState())
-                : emit(StorySuccessState(
+        (success) => success.data!.isEmpty
+            ? emit(const StoryEmptyState())
+            : emit(StorySuccessState(
                 listStory: success.data!, message: success.message)),
       );
     });

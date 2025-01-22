@@ -27,55 +27,45 @@ class AppRouter {
     routes: [
       GoRoute(
         path: PageRouteName.home,
-        pageBuilder:
-            (_, state) => MaterialPage(
-              child: HomePage(),
-            ),
+        pageBuilder: (_, state) => MaterialPage(
+          child: HomePage(),
+        ),
       ),
       GoRoute(
-        path: PageRouteName.detail,
-        pageBuilder:
-            (_, state) {
-          final storyId = state.extra as String;
-          return MaterialPage(
-            child: DetailPage(storyId: storyId),
-          );
-        }
-      ),
+          path: PageRouteName.detail,
+          pageBuilder: (_, state) {
+            final storyId = state.extra as String;
+            return MaterialPage(
+              child: DetailPage(storyId: storyId),
+            );
+          }),
       GoRoute(
         path: PageRouteName.login,
-        pageBuilder:
-            (_, state) => MaterialPage(
-              child: LoginPage(),
-            ),
+        pageBuilder: (_, state) => MaterialPage(
+          child: LoginPage(),
+        ),
       ),
       GoRoute(
         path: PageRouteName.register,
-        pageBuilder:
-            (_, state) => MaterialPage(
-              child: RegisterPage(),
-            ),
+        pageBuilder: (_, state) => MaterialPage(
+          child: RegisterPage(),
+        ),
       ),
       GoRoute(
         path: PageRouteName.add,
-        pageBuilder:
-            (_, state) => MaterialPage(
-              child: AddPage(),
-            ),
+        pageBuilder: (_, state) => MaterialPage(
+          child: AddPage(),
+        ),
       ),
       GoRoute(
         path: PageRouteName.onboarding,
-        pageBuilder: (_, state) =>
-            MaterialPage(
-                child: OnboardingPage()
-            ),
+        pageBuilder: (_, state) => MaterialPage(child: OnboardingPage()),
       ),
       GoRoute(
         path: PageRouteName.splash,
-        pageBuilder:
-            (_, state) => MaterialPage(
-              child: SplashPage(),
-            ),
+        pageBuilder: (_, state) => MaterialPage(
+          child: SplashPage(),
+        ),
       ),
     ],
   );

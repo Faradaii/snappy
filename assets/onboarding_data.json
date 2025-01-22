@@ -1,17 +1,17 @@
 [
   {
-    "title": "Welcome to \n Snappy!",
+    "title": "welcomeTitle",
     "image": "assets/images/onboarding_1.svg",
-    "desc": "A place where your stories come to life. Dive into a world of endless imagination."
+    "desc": "welcomeDesc"
   },
   {
-    "title": "Create \n Share Your Tales",
+    "title": "createTitle",
     "image": "assets/images/onboarding_2.svg",
-    "desc": "Write, share, and connect with other storytellers around the world."
+    "desc": "createDesc"
   },
   {
-    "title": "Discover \n New Adventures",
+    "title": "discoverTitle",
     "image": "assets/images/onboarding_3.svg",
-    "desc": "Uncover unique stories and journeys from people just like you!"
+    "desc": "discoverDesc"
   }
 ]

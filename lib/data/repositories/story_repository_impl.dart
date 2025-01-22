@@ -24,10 +24,8 @@ class StoryRepositoryImpl implements StoryRepository {
   });
 
   @override
-  Future<Either<Failure, Success<String>>> addStory(String description,
-      List<int> photo,
-      double? lat,
-      double? lon) async {
+  Future<Either<Failure, Success<String>>> addStory(
+      String description, List<int> photo, double? lat, double? lon) async {
     try {
       final configRequest = AddStoryRequest(
           description: description, photo: photo, lat: lat, lon: lon);
@@ -57,19 +55,17 @@ class StoryRepositoryImpl implements StoryRepository {
   }
 
   @override
-  Future<Either<Failure, Success<List<Story>>>> getStories(bool? forceRefresh,
-      int? page,
-      int? size,
-      int? location) async {
+  Future<Either<Failure, Success<List<Story>>>> getStories(
+      bool? forceRefresh, int? page, int? size, int? location) async {
     try {
-      final configRequest = StoriesRequest(
-          page: page, size: size, location: location);
+      final configRequest =
+          StoriesRequest(page: page, size: size, location: location);
       final apiResult = await storyRemoteDataSource.getStories(configRequest);
       if (apiResult.listStory != null) {
-        storyLocalDataSource
-            .insertOrUpdateListStory(apiResult.listStory ?? []);
+        storyLocalDataSource.insertOrUpdateListStory(apiResult.listStory ?? []);
       }
-      return Right(Success(message: apiResult.message,
+      return Right(Success(
+          message: apiResult.message,
           data: apiResult.listStory?.map((e) => e.toEntity()).toList()));
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {
@@ -85,8 +81,8 @@ class StoryRepositoryImpl implements StoryRepository {
   }
 
   @override
-  Future<Either<Failure, Success<String>>> loginAuth(String email,
-      String password) async {
+  Future<Either<Failure, Success<String>>> loginAuth(
+      String email, String password) async {
     try {
       final configRequest = LoginRequest(email: email, password: password);
       final result = await storyRemoteDataSource.authLogin(configRequest);
@@ -97,12 +93,11 @@ class StoryRepositoryImpl implements StoryRepository {
   }
 
   @override
-  Future<Either<Failure, Success<String>>> registerAuth(String name,
-      String email,
-      String password) async {
+  Future<Either<Failure, Success<String>>> registerAuth(
+      String name, String email, String password) async {
     try {
-      final configRequest = RegisterRequest(
-          name: name, email: email, password: password);
+      final configRequest =
+          RegisterRequest(name: name, email: email, password: password);
       final result = await storyRemoteDataSource.authRegister(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {

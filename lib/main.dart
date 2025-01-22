@@ -9,6 +9,8 @@ import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bl
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
 
 import 'bloc_observer.dart';
+import 'common/localizations/common.dart';
+import 'common/url/url_strategy_other.dart';
 import 'config/theme/theme.dart';
 import 'config/theme/util.dart';
 
@@ -17,6 +19,7 @@ void main() async {
   await injectionInit();
   Bloc.observer = MyObserver();
 
+  usePathUrlStrategy();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => getIt<AddStoryBloc>()),
@@ -34,15 +37,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextTheme textTheme = createTextTheme(
-        context, "Poppins", "Plus Jakarta Sans");
+    TextTheme textTheme =
+        createTextTheme(context, "Poppins", "Plus Jakarta Sans");
 
     MaterialTheme theme = MaterialTheme(textTheme);
     AppRouter appRouter = getIt<AppRouter>();
-    return MaterialApp.router(
-      routerConfig: appRouter.router,
-      theme: theme.light(),
-      darkTheme: theme.dark(),
+    return BlocBuilder<SharedPreferenceBloc, SharedPreferenceState>(
+      builder: (context, state) => MaterialApp.router(
+        locale: state.language,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        routerConfig: appRouter.router,
+        theme: theme.light(),
+        darkTheme: theme.dark(),
+      ),
     );
   }
 }

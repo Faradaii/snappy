@@ -7,23 +7,26 @@ class LoginResult {
   String? email;
 
   LoginResult(
-      {required this.userId, required this.name, required this.token, this.email});
+      {required this.userId,
+      required this.name,
+      required this.token,
+      this.email});
 
   factory LoginResult.fromJson(
-      {required Map<String, dynamic> json, String? email}) =>
+          {required Map<String, dynamic> json, String? email}) =>
       LoginResult(
-    userId: json['userId'],
-    name: json['name'],
-    token: json['token'],
+        userId: json['userId'],
+        name: json['name'],
+        token: json['token'],
         email: email ?? json['email'] ?? '',
-  );
+      );
 
   Map<String, dynamic> toJson() => {
-    'userId': userId,
-    'name': name,
-    'token': token,
-    'email': email ?? '',
-  };
+        'userId': userId,
+        'name': name,
+        'token': token,
+        'email': email ?? '',
+      };
 
   User toEntity() {
     return User(email: email ?? '', userId: userId, name: name, token: token);

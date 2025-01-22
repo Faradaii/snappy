@@ -12,7 +12,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final RegisterAuth authRegisterUseCase;
 
   AuthBloc({required this.authLoginUseCase, required this.authRegisterUseCase})
-    : super(AuthInitialState()) {
+      : super(AuthInitialState()) {
     on<AuthInitEvent>((event, emit) => emit(const AuthInitialState()));
 
     on<AuthLoginEvent>((event, emit) async {

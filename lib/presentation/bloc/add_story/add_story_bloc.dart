@@ -10,7 +10,7 @@ class AddStoryBloc extends Bloc<AddStoryEvent, AddStoryState> {
   final AddStory addStoryUseCase;
 
   AddStoryBloc({required this.addStoryUseCase})
-    : super(AddStoryInitialState()) {
+      : super(AddStoryInitialState()) {
     on<AddStorySubmitEvent>((event, emit) async {
       emit(const AddStoryLoadingState());
       final result = await addStoryUseCase.execute(

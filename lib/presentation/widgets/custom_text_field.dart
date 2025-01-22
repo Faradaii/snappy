@@ -32,37 +32,28 @@ class CustomTextField extends StatelessWidget {
       decoration: InputDecoration(
         hintText: hintText,
         prefixIcon: prefixIcon,
-        suffixIcon:
-            suffixIcon != null
-                ? IconButton(icon: suffixIcon!, onPressed: onSuffixIconPressed)
-                : null,
+        suffixIcon: suffixIcon != null
+            ? IconButton(icon: suffixIcon!, onPressed: onSuffixIconPressed)
+            : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          borderSide: BorderSide(color: Theme
-              .of(context)
-              .colorScheme
-              .primary, width: 0.0),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary, width: 0.0),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Theme
-              .of(context)
-              .colorScheme
-              .primary, width: 2),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.primary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          borderSide: BorderSide(color: Theme
-              .of(context)
-              .colorScheme
-              .error, width: 0.0),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.error, width: 0.0),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(color: Theme
-              .of(context)
-              .colorScheme
-              .error, width: 1),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.error, width: 1),
         ),
       ),
     );
