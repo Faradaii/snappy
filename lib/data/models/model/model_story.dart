@@ -7,8 +7,8 @@ class StoryModel extends Equatable {
   final String description;
   final String photoUrl;
   final String createdAt;
-  final double lat;
-  final double lon;
+  final double? lat;
+  final double? lon;
 
   const StoryModel({
     required this.id,
@@ -16,29 +16,38 @@ class StoryModel extends Equatable {
     required this.description,
     required this.photoUrl,
     required this.createdAt,
-    required this.lat,
-    required this.lon,
+    this.lat,
+    this.lon,
   });
 
   factory StoryModel.fromJson(Map<String, dynamic> json) => StoryModel(
-    id: json['id'],
-    name: json['name'],
-    description: json['description'],
-    photoUrl: json['photoUrl'],
-    createdAt: json['createdAt'],
-    lat: json['lat'],
-    lon: json['lon'],
-  );
+        id: json['id'],
+        name: json['name'],
+        description: json['description'],
+        photoUrl: json['photoUrl'],
+        createdAt: json['createdAt'],
+        lat: json['lat'],
+        lon: json['lon'],
+      );
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'name': name,
-    'description': description,
-    'photoUrl': photoUrl,
-    'createdAt': createdAt,
-    'lat': lat,
-    'lon': lon,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {
+      'id': id,
+      'name': name,
+      'description': description,
+      'photoUrl': photoUrl,
+      'createdAt': createdAt,
+    };
+
+    if (lat != null) {
+      data['lat'] = lat;
+    }
+    if (lon != null) {
+      data['lon'] = lon;
+    }
+
+    return data;
+  }
 
   Story toEntity() {
     return Story(
@@ -54,12 +63,12 @@ class StoryModel extends Equatable {
 
   @override
   List<Object?> get props => [
-    id,
-    name,
-    description,
-    photoUrl,
-    createdAt,
-    lat,
-    lon,
-  ];
+        id,
+        name,
+        description,
+        photoUrl,
+        createdAt,
+        lat,
+        lon,
+      ];
 }

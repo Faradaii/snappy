@@ -14,20 +14,19 @@ class StoriesResponse extends ApiMessageResponse {
       StoriesResponse(
         error: json['error'],
         message: json['message'],
-        listStory:
-            json['listStory'] != null
-                ? List<StoryModel>.from(
-                  json['listStory'].map((v) => StoryModel.fromJson(v)),
-                )
-                : [],
+        listStory: json['listStory'] != null
+            ? List<StoryModel>.from(
+                json['listStory'].map((v) => StoryModel.fromJson(v)),
+              )
+            : [],
       );
 
   @override
   Map<String, dynamic> toJson() => {
-    'error': error,
-    'message': message,
-    'listStory': listStory?.map((v) => v.toJson()).toList(),
-  };
+        'error': error,
+        'message': message,
+        'listStory': listStory?.map((v) => v.toJson()).toList(),
+      };
 
   @override
   List<Object?> get props => [error, message, listStory];

@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:snappy/data/models/model/model_login_result.dart';
 import 'package:snappy/data/models/request/request_add_story.dart';
 import 'package:snappy/data/models/request/request_login.dart';
@@ -29,68 +26,71 @@ abstract class StoryRemoteDataSource {
 class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
   final Dio dio;
   final PreferencesHelper preferencesHelper;
-  late final String baseUrl;
-  late final String token;
+  late final String? baseUrl;
+  late final String? token;
 
   StoryRemoteDataSourceImpl({
-    required this.dio, required this.preferencesHelper,
+    required this.dio,
+    required this.preferencesHelper,
   }) {
     init();
   }
 
   init() async {
-    baseUrl = dotenv.env['API_BASE_URL'] ?? '';
-    if (baseUrl.isEmpty) {
+    baseUrl = 'https://story-api.dicoding.dev/v1';
+    if (baseUrl == null) {
       throw Exception('API_BASE_URL is not defined in the environment file');
     } else {
-      dio.options.baseUrl = baseUrl;
+      dio.options.baseUrl = baseUrl!;
     }
 
-    token = await preferencesHelper.getToken().then((value) => value ?? '');
+    token = await preferencesHelper.getToken().then((value) => value);
+    if (token != null) {
+      dio.options.headers['Authorization'] = 'Bearer $token';
+    }
 
     if (!dio.interceptors.any((i) => i is InterceptorsWrapper)) {
       dio.interceptors.add(
-        InterceptorsWrapper(
-          onRequest: (options, handler) {
-            options.headers['Authorization'] = 'Bearer $token';
-            return handler.next(options);
-          },
-          onError: (e, handler) async {
-            throw Exception(e);
-          },
-        ),
+        InterceptorsWrapper(onRequest: (options, handler) {
+          return handler.next(options);
+        }, onResponse: (response, handler) async {
+          return handler.next(response);
+        }),
       );
     }
   }
 
   @override
   Future<ApiMessageResponse> addStory(AddStoryRequest newStory) async {
+    FormData newStoryData = FormData.fromMap(newStory.toJson());
     final response = await dio.post(
       '/stories',
-      data: newStory.toJson(),
+      options: Options(headers: {'Content-Type': 'multipart/form-data'}),
+      data: newStoryData,
     );
-    print(response);
 
-    if (response.statusCode == 200) {
-      return ApiMessageResponse.fromJson(jsonDecode(response.data));
-    } else {
+    if (ApiMessageResponse.fromJson(response.data).error) {
       throw Exception('Failed to add story');
+    } else {
+      return ApiMessageResponse.fromJson(response.data);
     }
   }
 
   @override
   Future<LoginResponse> authLogin(LoginRequest loginData) async {
     final response = await dio.post('/login', data: loginData.toJson());
-    print(response);
 
-    if (response.statusCode == 200) {
-      LoginResult loginResult = LoginResult.fromJson(
-          email: loginData.email, json: response.data);
-      await preferencesHelper.setSavedUser(loginResult);
-
-      return LoginResponse.fromJson(jsonDecode(response.data));
-    } else {
+    if (LoginResponse.fromJson(response.data).error) {
       throw Exception('Failed to login');
+    } else {
+      LoginResult loginResult = LoginResult.fromJson(
+        email: loginData.email,
+        json: response.data['loginResult'],
+      );
+      await preferencesHelper.setSavedUser(loginResult.toEntity());
+      dio.options.headers['Authorization'] = 'Bearer ${loginResult.token}';
+
+      return LoginResponse.fromJson(response.data);
     }
   }
 
@@ -100,22 +100,20 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       '/register',
       data: registerData.toJson(),
     );
-    print(response);
 
-    if (response.statusCode == 200) {
-      return ApiMessageResponse.fromJson(jsonDecode(response.data));
-    } else {
+    if (ApiMessageResponse.fromJson(response.data).error) {
       throw Exception('Failed to register');
+    } else {
+      return ApiMessageResponse.fromJson(response.data);
     }
   }
 
   @override
   Future<StoryDetailResponse> getDetailStory(String id) async {
     final response = await dio.get('/stories/$id');
-    print(response);
 
     if (response.statusCode == 200) {
-      return StoryDetailResponse.fromJson(jsonDecode(response.data));
+      return StoryDetailResponse.fromJson(response.data);
     } else {
       throw Exception('Failed to load story');
     }
@@ -127,10 +125,9 @@ class StoryRemoteDataSourceImpl implements StoryRemoteDataSource {
       '/stories',
       queryParameters: configRequest?.toJson(),
     );
-    print(response);
 
     if (response.statusCode == 200) {
-      return StoriesResponse.fromJson(jsonDecode(response.data));
+      return StoriesResponse.fromJson(response.data);
     } else {
       throw Exception('Failed to load stories');
     }

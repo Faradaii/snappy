@@ -20,15 +20,15 @@ class DatabaseHelper {
     return _database;
   }
 
-  static const String _tblSnappy = TABLE_NAME;
+  static const String _tblSnappy = tableName;
 
   Future<Database> _initDb() async {
     final path = await getDatabasesPath();
-    final databasePath = '$path/$DB_NAME';
+    final databasePath = '$path/$dbName';
 
     var db = await openDatabase(
       databasePath,
-      version: DB_VERSION,
+      version: dbVersion,
       onCreate: _onCreate,
     );
     return db;
@@ -40,9 +40,10 @@ class DatabaseHelper {
         id TEXT PRIMARY KEY,
         name TEXT,
         description TEXT,
-        createdAt TEXT,
-        lat TEXT,
-        lon TEXT
+        photoUrl TEXT,
+        createdAt DATE,
+        lat REAL,
+        lon REAL
       );
     ''');
   }
@@ -101,7 +102,10 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getStories() async {
     final db = await database;
-    final List<Map<String, dynamic>> results = await db!.query(_tblSnappy);
+    final List<Map<String, dynamic>> results = await db!.query(
+      _tblSnappy,
+      orderBy: 'createdAt DESC',
+    );
 
     return results;
   }

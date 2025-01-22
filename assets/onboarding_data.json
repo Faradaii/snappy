@@ -1,0 +1,17 @@
+[
+  {
+    "title": "welcomeTitle",
+    "image": "assets/images/onboarding_1.svg",
+    "desc": "welcomeDesc"
+  },
+  {
+    "title": "createTitle",
+    "image": "assets/images/onboarding_2.svg",
+    "desc": "createDesc"
+  },
+  {
+    "title": "discoverTitle",
+    "image": "assets/images/onboarding_3.svg",
+    "desc": "discoverDesc"
+  }
+]

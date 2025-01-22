@@ -24,97 +24,84 @@ class StoryRepositoryImpl implements StoryRepository {
   });
 
   @override
-  Future<Either<Failure, Success<String>>> addStory(String description,
-      List<int> photo,
-      double? lat,
-      double? lon) async {
+  Future<Either<Failure, Success<String>>> addStory(
+      String description, List<int> photo, double? lat, double? lon) async {
     try {
       final configRequest = AddStoryRequest(
           description: description, photo: photo, lat: lat, lon: lon);
       final result = await storyRemoteDataSource.addStory(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to add story"));
     }
   }
 
   @override
   Future<Either<Failure, Success<Story>>> getDetailStory(String id) async {
     try {
+      final localResult = await storyLocalDataSource.getStoryById(id);
+      if (localResult != null) {
+        return Right(Success(
+          message: 'Loaded',
+          data: localResult.toEntity(),
+        ));
+      }
       final result = await storyRemoteDataSource.getDetailStory(id);
       return Right(
           Success(message: result.message, data: result.story?.toEntity()));
     } catch (e) {
-      if (e is SocketException || e is TimeoutException || e is HttpException) {
-        try {
-          final result = await storyLocalDataSource.getStoryById(id);
-          return Right(Success(
-            message: 'No internet connection',
-            data: result?.toEntity(),
-          ));
-        } catch (localError) {
-          return Left(Failure(
-              'Failed to retrieve local data: ${localError.toString()}'));
-        }
-      } else {
-        return Left(Failure(e.toString()));
-      }
+      return Left(Failure("Failed to load"));
     }
   }
 
   @override
-  Future<Either<Failure, Success<List<Story>>>> getStories(int? page,
-      int? size,
-      int? location) async {
+  Future<Either<Failure, Success<List<Story>>>> getStories(
+      bool? forceRefresh, int? page, int? size, int? location) async {
     try {
-      final configRequest = StoriesRequest(
-          page: page, size: size, location: location);
-      final result = await storyRemoteDataSource.getStories(configRequest);
-      if (result.listStory != null) storyLocalDataSource
-          .insertOrUpdateListStory(result.listStory ?? []);
-      return Right(Success(message: result.message,
-          data: result.listStory?.map((e) => e.toEntity()).toList()));
+      final configRequest =
+          StoriesRequest(page: page, size: size, location: location);
+      final apiResult = await storyRemoteDataSource.getStories(configRequest);
+      if (apiResult.listStory != null) {
+        storyLocalDataSource.insertOrUpdateListStory(apiResult.listStory ?? []);
+      }
+      return Right(Success(
+          message: apiResult.message,
+          data: apiResult.listStory?.map((e) => e.toEntity()).toList()));
     } catch (e) {
       if (e is SocketException || e is TimeoutException || e is HttpException) {
-        try {
-          final result = await storyLocalDataSource.getStories();
-          return Right(Success(
-            message: 'No internet connection',
-            data: result.map((e) => e.toEntity()).toList(),
-          ));
-        } catch (localError) {
-          return Left(Failure(
-              'Failed to retrieve local data: ${localError.toString()}'));
-        }
+        final localResult = await storyLocalDataSource.getStories();
+        return Right(Success(
+          message: 'Load from local',
+          data: localResult.map((e) => e.toEntity()).toList(),
+        ));
       } else {
-        return Left(Failure(e.toString()));
+        return Left(Failure("Failed to load"));
       }
     }
   }
 
   @override
-  Future<Either<Failure, Success<String>>> loginAuth(String email,
-      String password) async {
+  Future<Either<Failure, Success<String>>> loginAuth(
+      String email, String password) async {
     try {
       final configRequest = LoginRequest(email: email, password: password);
       final result = await storyRemoteDataSource.authLogin(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to login"));
     }
   }
 
   @override
-  Future<Either<Failure, Success<String>>> registerAuth(String name,
-      String email,
-      String password) async {
+  Future<Either<Failure, Success<String>>> registerAuth(
+      String name, String email, String password) async {
     try {
-      final configRequest = RegisterRequest(
-          name: name, email: email, password: password);
+      final configRequest =
+          RegisterRequest(name: name, email: email, password: password);
       final result = await storyRemoteDataSource.authRegister(configRequest);
       return Right(Success(message: result.message));
     } catch (e) {
-      return Left(Failure(e.toString()));
+      return Left(Failure("Failed to register"));
     }
   }
 }

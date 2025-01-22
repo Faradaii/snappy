@@ -9,8 +9,8 @@ class LoginAuth {
 
   LoginAuth(this.repository);
 
-  Future<Either<Failure, Success<String>>> execute(String email,
-      String password) {
+  Future<Either<Failure, Success<String>>> execute(
+      String email, String password) {
     return repository.loginAuth(email, password);
   }
 }
