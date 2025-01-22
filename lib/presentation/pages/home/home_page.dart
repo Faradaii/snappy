@@ -31,8 +31,9 @@ class _HomePageState extends State<HomePage> {
     storyBloc = context.read<StoryBloc>();
 
     scrollController.addListener(() {
-      if (scrollController.position.pixels >= scrollController.position.maxScrollExtent) {
-        if(storyBloc.state.page != null) {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        if (storyBloc.state.page != null) {
           _loadStories();
         }
       }
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<StoryBloc, StoryState>(
-      builder: (BuildContext context, StoryState state) {
+        builder: (BuildContext context, StoryState state) {
       return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -61,11 +62,12 @@ class _HomePageState extends State<HomePage> {
             title: RotatingWidget(
               radius: 0,
               widget: Image.asset(
-              "assets/snappy.png",
-              fit: BoxFit.fill,
-              width: 60,
-              height: 60,
-            ),),
+                "assets/snappy.png",
+                fit: BoxFit.fill,
+                width: 60,
+                height: 60,
+              ),
+            ),
             leading: Builder(
               builder: (context) {
                 return IconButton(
@@ -92,18 +94,17 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
           body: SafeArea(
-            child: RefreshIndicator(
-                onRefresh: () async {
-                  context
-                      .read<StoryBloc>()
-                      .add(GetAllStoryEvent(forceRefresh: true));
-                },
-                child: state is StoryErrorState
-                    ? Center(
-            child: Text(state.message ??
-            AppLocalizations.of(context)!.error)) :
-          _buildListStory(context, state.listStory!)
-          )));
+              child: RefreshIndicator(
+                  onRefresh: () async {
+                    context
+                        .read<StoryBloc>()
+                        .add(GetAllStoryEvent(forceRefresh: true));
+                  },
+                  child: state is StoryErrorState
+                      ? Center(
+                          child: Text(state.message ??
+                              AppLocalizations.of(context)!.error))
+                      : _buildListStory(context, state.listStory!))));
     });
   }
 
@@ -124,7 +125,8 @@ class _HomePageState extends State<HomePage> {
 
         if (listStory.isEmpty) {
           return Center(
-            child: Text(AppLocalizations.of(context)!.noStory, style: Theme.of(context).textTheme.titleLarge),
+            child: Text(AppLocalizations.of(context)!.noStory,
+                style: Theme.of(context).textTheme.titleLarge),
           );
         }
 

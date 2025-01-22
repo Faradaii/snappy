@@ -74,17 +74,19 @@ class _RegisterPageState extends State<RegisterPage> {
                 spacing: 20,
                 children: [
                   FlagLanguage(),
-                  RotatingWidget(widget: SizedBox(
-                    height: 150,
-                    width: 150,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
-                      child: Image.asset(
-                        "assets/snappy.png",
-                        fit: BoxFit.cover,
+                  RotatingWidget(
+                    widget: SizedBox(
+                      height: 150,
+                      width: 150,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Image.asset(
+                          "assets/snappy.png",
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     ),
-                  ),),
+                  ),
                   Column(
                     spacing: 10,
                     mainAxisSize: MainAxisSize.max,

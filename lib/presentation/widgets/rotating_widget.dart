@@ -10,7 +10,8 @@ class RotatingWidget extends StatefulWidget {
   _RotatingWidgetState createState() => _RotatingWidgetState();
 }
 
-class _RotatingWidgetState extends State<RotatingWidget> with SingleTickerProviderStateMixin {
+class _RotatingWidgetState extends State<RotatingWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _rotationAnimation;
   late Animation<double> _circleAnimation;
@@ -24,9 +25,11 @@ class _RotatingWidgetState extends State<RotatingWidget> with SingleTickerProvid
       duration: const Duration(seconds: 4),
     )..repeat();
 
-    _rotationAnimation = Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
+    _rotationAnimation =
+        Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
 
-    _circleAnimation = Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
+    _circleAnimation =
+        Tween<double>(begin: 0, end: 2 * pi).animate(_controller);
   }
 
   @override
