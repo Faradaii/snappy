@@ -47,8 +47,8 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  void _loadStories() {
-    context.read<StoryBloc>().add(GetAllStoryEvent());
+  void _loadStories({bool forceRefresh = false}) {
+    context.read<StoryBloc>().add(GetAllStoryEvent(forceRefresh: forceRefresh));
   }
 
   @override
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () async {
               final shouldRefresh = await context.push(PageRouteName.add);
               if (shouldRefresh == true) {
-                _loadStories();
+                _loadStories(forceRefresh: true);
               }
             },
             backgroundColor: Theme.of(context).colorScheme.primary,

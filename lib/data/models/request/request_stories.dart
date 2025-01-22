@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'request_stories.g.dart';
+
+@JsonSerializable()
 class StoriesRequest {
   final int? page;
   final int? size;
@@ -5,11 +10,5 @@ class StoriesRequest {
 
   StoriesRequest({this.page, this.size, this.location});
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {};
-    if (page != null) data['page'] = page;
-    if (size != null) data['size'] = size;
-    if (location != null) data['location'] = location;
-    return data;
-  }
+  Map<String, dynamic> toJson() => _$StoriesRequestToJson(this);
 }
