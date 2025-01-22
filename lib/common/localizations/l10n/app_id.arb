@@ -52,5 +52,12 @@
     "timeMonthsAgo": "{months} bulan yang lalu",
     "timeYearAgo": "1 tahun yang lalu",
     "timeYearsAgo": "{years} tahun yang lalu",
-    "dateTimeFormat": "dd MMM yyyy • HH.mm"
+    "dateTimeFormat": "dd MMM yyyy • HH.mm",
+    "successAddStory": "Berhasil menambahkan cerita",
+    "failedAddStory": "Ups, gagal menambahkan cerita",
+    "successLogin": "Berhasil login",
+    "failedLogin": "Ups, gagal masuk",
+    "successRegister": "Berhasil mendaftar",
+    "failedRegister": "Ups, gagal mendaftar",
+    "noStory": "Cerita tidak ditemukan"
 }

@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is AuthLoginSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.successLogin),
             ),
           );
 
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
         if (state is AuthErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.failedLogin),
             ),
           );
         }

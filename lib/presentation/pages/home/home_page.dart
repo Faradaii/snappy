@@ -22,10 +22,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ScrollController scrollController = ScrollController();
+  late final StoryBloc storyBloc;
+
   @override
   void initState() {
     super.initState();
+    storyBloc = context.read<StoryBloc>();
+
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >= scrollController.position.maxScrollExtent) {
+        if(storyBloc.state.page != null) {
+          _loadStories();
+        }
+      }
+    });
     _loadStories();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   void _loadStories() {
@@ -34,16 +52,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<StoryBloc, StoryState>(
-        listener: (BuildContext context, StoryState state) {
-      if (state is StoryErrorState || state is StorySuccessState) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(state.message!),
-          ),
-        );
-      }
-    }, builder: (BuildContext context, StoryState state) {
+    return BlocBuilder<StoryBloc, StoryState>(
+      builder: (BuildContext context, StoryState state) {
       return Scaffold(
           appBar: AppBar(
             centerTitle: true,
@@ -88,22 +98,36 @@ class _HomePageState extends State<HomePage> {
                       .read<StoryBloc>()
                       .add(GetAllStoryEvent(forceRefresh: true));
                 },
-                child: state is StorySuccessState
-                    ? _buildListStory(context, state.listStory)
-                    : state is StoryErrorState
-                        ? Center(
-                            child: Text(state.message ??
-                                AppLocalizations.of(context)!.error))
-                        : const Center(child: CircularProgressIndicator())),
-          ));
+                child: state is StoryErrorState
+                    ? Center(
+            child: Text(state.message ??
+            AppLocalizations.of(context)!.error)) :
+          _buildListStory(context, state.listStory!)
+          )));
     });
   }
 
   Widget _buildListStory(BuildContext context, List<Story> listStory) {
     return ListView.builder(
+      controller: scrollController,
       shrinkWrap: false,
-      itemCount: listStory.length,
+      itemCount: listStory.length + (storyBloc.state.page != null ? 1 : 0),
       itemBuilder: (context, index) {
+        if (index == listStory.length && storyBloc.state.page != null) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        if (listStory.isEmpty) {
+          return Center(
+            child: Text(AppLocalizations.of(context)!.noStory, style: Theme.of(context).textTheme.titleLarge),
+          );
+        }
+
         return Column(
           children: [
             _buildStoryItem(context, listStory, index),

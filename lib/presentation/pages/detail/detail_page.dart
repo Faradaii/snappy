@@ -15,15 +15,7 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<DetailStoryBloc>().add(GetDetailStoryEvent(storyId));
-    return BlocConsumer<DetailStoryBloc, DetailStoryState>(
-      listener: (BuildContext context, DetailStoryState state) {
-        if (state is DetailStoryErrorState ||
-            state is DetailStorySuccessState) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message!)));
-        }
-      },
+    return BlocBuilder<DetailStoryBloc, DetailStoryState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(

@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (state is AuthRegisterSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.successRegister),
             ),
           );
           context.pop();
@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
         if (state is AuthErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text(state.message!),
+              content: Text(AppLocalizations.of(context)!.failedRegister),
             ),
           );
         }
