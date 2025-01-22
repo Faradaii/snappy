@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snappy/presentation/bloc/auth/auth_bloc.dart';
+import 'package:snappy/presentation/widgets/rotating_widget.dart';
 
 import '../../../common/localizations/common.dart';
 import '../../widgets/bottom_auth_text.dart';
@@ -73,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 spacing: 20,
                 children: [
                   FlagLanguage(),
-                  SizedBox(
+                  RotatingWidget(widget: SizedBox(
                     height: 150,
                     width: 150,
                     child: ClipRRect(
@@ -83,7 +84,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         fit: BoxFit.cover,
                       ),
                     ),
-                  ),
+                  ),),
                   Column(
                     spacing: 10,
                     mainAxisSize: MainAxisSize.max,

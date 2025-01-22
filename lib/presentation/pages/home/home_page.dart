@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
 import 'package:snappy/presentation/widgets/flag_language.dart';
+import 'package:snappy/presentation/widgets/rotating_widget.dart';
 
 import '../../../common/localizations/common.dart';
 import '../../../common/utils/date_util.dart';
@@ -47,12 +48,14 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(
             centerTitle: true,
             elevation: 0,
-            title: Image.asset(
+            title: RotatingWidget(
+              radius: 0,
+              widget: Image.asset(
               "assets/snappy.png",
               fit: BoxFit.fill,
               width: 60,
               height: 60,
-            ),
+            ),),
             leading: Builder(
               builder: (context) {
                 return IconButton(
