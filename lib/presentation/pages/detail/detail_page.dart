@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:smooth_sheets/smooth_sheets.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
 
@@ -20,6 +23,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  late GoogleMapController mapController;
   bool isOpenBottomSheet = false;
 
   @override
@@ -28,7 +32,6 @@ class _DetailPageState extends State<DetailPage> {
     return BlocBuilder<DetailStoryBloc, DetailStoryState>(
       builder: (context, state) {
         return Scaffold(
-          bottomSheet: (isOpenBottomSheet && state is DetailStorySuccessState) ? BuildMapsBottomSheet(story: state.detailStory) : null,
           appBar: AppBar(
             title: Text(AppLocalizations.of(context)!.story,
                 style: Theme.of(context).textTheme.titleLarge),
@@ -126,7 +129,23 @@ class _DetailPageState extends State<DetailPage> {
                 alignment: Alignment.topCenter,
               ),
             ),
-            if (detailStory.lat != null && detailStory.lon != null) _buildMapsMini(detailStory: detailStory, onTap: () => () => setState(() => isOpenBottomSheet = !isOpenBottomSheet)),
+            if (detailStory.lat != null && detailStory.lon != null) _buildMapsMini(detailStory: detailStory, onTap: () {
+                showModalBottomSheet(
+                  backgroundColor: Theme
+                      .of(context)
+                      .colorScheme
+                      .onPrimary,
+                  enableDrag: true,
+                  showDragHandle: true,
+                  useSafeArea: true,
+                  isScrollControlled: true,
+                  context:context,
+                  builder: (context) => BuildMapsBottomSheet(
+                    story: detailStory,
+                    mapController: mapController,
+                  ),
+                );}
+            ),
           ],
         ),
         Text(DateUtil.dateTimeToString(context, detailStory.createdAt)),
@@ -135,18 +154,36 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildMapsMini ({required Story detailStory, required Function onTap}) {
-    final latlng = LatLng(detailStory.lat!, detailStory.lon!);
-    return InkWell(
-      onTap: onTap(),
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        width: 100,
-        height: 100,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
+    final LatLng latlng = LatLng(detailStory.lat!, detailStory.lon!);
+    final marker = {Marker(
+    markerId: MarkerId(detailStory.name),
+    position: latlng,
+    )};
+    return Container(
+      width: 100,
+      height: 100,
+      margin: const EdgeInsets.all(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: (){onTap();},
+        child: IgnorePointer(
+          ignoring: true,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: GoogleMap(
+              markers: marker,
+              onMapCreated: (controller) {
+                setState(() {
+                  mapController = controller;
+                });
+                mapController.animateCamera(
+                  CameraUpdate.newLatLngZoom(latlng, 10),
+                );
+              },
+              initialCameraPosition: CameraPosition(target: latlng, zoom: 1000),
+              zoomControlsEnabled: false),
+          ),
         ),
-        margin: const EdgeInsets.all(10),
-        child: GoogleMap(initialCameraPosition: CameraPosition(target: latlng, zoom: 20),),
       ),
     );
   }
@@ -154,15 +191,16 @@ class _DetailPageState extends State<DetailPage> {
 
 class BuildMapsBottomSheet extends StatefulWidget {
   final Story story;
-  const BuildMapsBottomSheet({super.key, required this.story});
+  GoogleMapController mapController;
+  BuildMapsBottomSheet({super.key, required this.story, required this.mapController});
 
   @override
   State<BuildMapsBottomSheet> createState() => _BuildMapsBottomSheetState();
 }
 
 class _BuildMapsBottomSheetState extends State<BuildMapsBottomSheet> {
-  late GoogleMapController mapController;
   late LatLng latlngStory;
+  late geo.Placemark place;
   final Set<Marker> markers = {};
   bool isShowDetailMarker = false;
 
@@ -175,113 +213,76 @@ class _BuildMapsBottomSheetState extends State<BuildMapsBottomSheet> {
     _buildMarkers();
   }
 
-  void _buildMarkers() async {
-    var imageUrl = widget.story.photoUrl;
-    var dio = Dio();
-    var bytes = await dio.get(imageUrl, options: Options(responseType: ResponseType.bytes));
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-    final customIcon = BitmapDescriptor.bytes(bytes.data);
+  void _buildMarkers() async {
+    final info =
+    await geo.placemarkFromCoordinates(latlngStory.latitude, latlngStory.longitude);
+    place = info[0];
+
     final marker = Marker(
-      icon: customIcon,
       markerId: MarkerId(widget.story.name),
       position: latlngStory,
+      infoWindow: InfoWindow(title: widget.story.name, snippet: place.administrativeArea),
       onTap: () {
-        mapController.animateCamera(
-          CameraUpdate.newLatLngZoom(latlngStory, 20),
-        );
-        setState(() {
-          isShowDetailMarker = !isShowDetailMarker;
-        });
+        show();
       },
     );
-    markers.add(marker);
+    setState(() {
+      markers.add(marker);
+    });
+  }
+
+  void show() {
+    showModalBottomSheet(
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .onPrimary,
+      useSafeArea: true,
+      enableDrag: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Text("${place.name}", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+            Text("${place.street}, ${place.name}, ${place.administrativeArea} - ${place.country}", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
+            Divider(),
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              child: Image.network(
+                widget.story.photoUrl,
+                fit: BoxFit.fitWidth,
+                width: double.infinity,
+                alignment: Alignment.topCenter,
+              ),
+            ),
+          ],
+        ),
+      ));
   }
 
   @override
   Widget build(BuildContext context) {
-    final detailStory = widget.story;
-    return BottomSheet(
-      showDragHandle: true,
-      onClosing: () {},
-      builder: (context) =>
-        Stack(
-          children: [
-            GoogleMap(
-              markers: markers,
-              initialCameraPosition: CameraPosition(target: latlngStory, zoom: 20),
-              onMapCreated: (controller) {
-                setState(() {
-                  mapController = controller;
-                });
-                mapController.animateCamera(
-                  CameraUpdate.newLatLngZoom(latlngStory, 20),
-                );
-              },
-            ),
-            _buildZoomButton(),
-            if (isShowDetailMarker)
-            FutureBuilder<Widget>(
-              future: _buildDetailMarker(detailStory: detailStory, isShowDetailMarker: isShowDetailMarker),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return snapshot.data!;
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
-            )
-          ],
-        )
-  );
-  }
-
-  Widget _buildZoomButton() {
-    return Positioned(
-      top: 16,
-      right: 16,
-      child: Column(
-        children: [
-          FloatingActionButton.small(
-            heroTag: "zoom-in",
-            onPressed: () {
-              mapController.animateCamera(
-                CameraUpdate.zoomIn(),
-              );
-            },
-            child: const Icon(Icons.add),
-          ),
-          FloatingActionButton.small(
-            heroTag: "zoom-out",
-            onPressed: () {
-              mapController.animateCamera(
-                CameraUpdate.zoomOut(),
-              );
-            },
-            child: const Icon(Icons.remove),
-          ),
-        ],
-      ),
+    return Scaffold(
+      body: Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width -10,
+          child: _buildMaps()
+        ),
+      )
     );
   }
 
-  Future<Widget> _buildDetailMarker({required Story detailStory, required bool isShowDetailMarker}) async {
-    final info =
-        await geo.placemarkFromCoordinates(latlngStory.latitude, latlngStory.longitude);
-    final place = info[0];
-    return Positioned(
-      bottom: 16,
-      right: 16,
-      left: 16,
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Text("${place.name}"),
-            Text("${place.street}"),
-          ],
-        ),
-      ),
+  _buildMaps() {
+    return GoogleMap(
+      markers: markers,
+      initialCameraPosition: CameraPosition(target: latlngStory, zoom: 15),
     );
   }
 }
