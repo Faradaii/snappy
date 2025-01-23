@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadStories({bool forceRefresh = false}) {
-    context.read<StoryBloc>().add(GetAllStoryEvent(forceRefresh: forceRefresh));
+    context.read<StoryBloc>().add(GetAllStoryEvent(forceRefresh: forceRefresh, location: 1));
   }
 
   @override

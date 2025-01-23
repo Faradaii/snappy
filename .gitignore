@@ -45,8 +45,3 @@ app.*.map.json
 /android/app/release
 
 /macos/Flutter/GeneratedPluginRegistrant.swift
-
-# Map API Key
-/android/app/src/main/AndroidManifest.xml
-/ios/Runner/AppDelegate.swift
-/web/index.html
