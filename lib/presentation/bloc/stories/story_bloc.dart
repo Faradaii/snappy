@@ -12,7 +12,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
 
   StoryBloc({required this.storyGetAllUseCase}) : super(StoryInitialState()) {
     on<GetAllStoryEvent>((event, emit) async {
-      final resetPage = 0;
+      final resetPage = 1;
       if (event.forceRefresh != null && event.forceRefresh == true) {
         emit(StoryLoadingState(
             page: resetPage,
@@ -20,11 +20,11 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
             listStory: []));
       } else {
         emit(StoryLoadingState(
-            page: state.page ?? 0, size: state.size, listStory: state.listStory));
+            page: state.page ?? 1, size: state.size, listStory: state.listStory));
       }
       final result = await storyGetAllUseCase.execute(
         event.forceRefresh,
-        state.page ?? 0,
+        state.page ?? 1,
         state.size,
         event.location,
       );
@@ -35,7 +35,7 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
             page: state.page, size: state.size, listStory: state.listStory)),
         (success) {
           final nextPage =
-              success.data!.length < state.size ? null : (state.page ?? 0) + 1;
+              success.data!.length < state.size ? null : (state.page ?? 1) + 1;
 
           success.data!.isEmpty
               ? emit(StoryEmptyState(

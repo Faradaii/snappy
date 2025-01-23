@@ -17,7 +17,7 @@ sealed class StoryState {
 
 final class StoryInitialState extends StoryState {
   StoryInitialState()
-      : super(dataState: DataState.loading, page: 0, size: 5, listStory: []);
+      : super(dataState: DataState.loading, page: 1, size: 5, listStory: []);
 }
 
 final class StoryLoadingState extends StoryState {

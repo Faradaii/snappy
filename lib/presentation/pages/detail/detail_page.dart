@@ -248,21 +248,23 @@ class _BuildMapsBottomSheetState extends State<BuildMapsBottomSheet> {
       context: context,
       builder: (context) => Container(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            Text("${place.name}", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-            Text("${place.street}, ${place.name}, ${place.administrativeArea} - ${place.country}", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
-            Divider(),
-            ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-              child: Image.network(
-                widget.story.photoUrl,
-                fit: BoxFit.fitWidth,
-                width: double.infinity,
-                alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text("${place.name}", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+              Text("${place.street}, ${place.name}, ${place.administrativeArea} - ${place.country}", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
+              Divider(),
+              ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(12)),
+                child: Image.network(
+                  widget.story.photoUrl,
+                  fit: BoxFit.fitWidth,
+                  width: double.infinity,
+                  alignment: Alignment.topCenter,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ));
   }
