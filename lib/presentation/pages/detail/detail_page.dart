@@ -1,12 +1,9 @@
-import 'dart:typed_data';
 
-import 'package:dio/dio.dart';
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:smooth_sheets/smooth_sheets.dart';
 import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/detail_story/detail_story_bloc.dart';
 
@@ -129,23 +126,23 @@ class _DetailPageState extends State<DetailPage> {
                 alignment: Alignment.topCenter,
               ),
             ),
-            if (detailStory.lat != null && detailStory.lon != null) _buildMapsMini(detailStory: detailStory, onTap: () {
-                showModalBottomSheet(
-                  backgroundColor: Theme
-                      .of(context)
-                      .colorScheme
-                      .onPrimary,
-                  enableDrag: true,
-                  showDragHandle: true,
-                  useSafeArea: true,
-                  isScrollControlled: true,
-                  context:context,
-                  builder: (context) => BuildMapsBottomSheet(
-                    story: detailStory,
-                    mapController: mapController,
-                  ),
-                );}
-            ),
+            if (detailStory.lat != null && detailStory.lon != null)
+              _buildMiniMaps(
+                  detailStory: detailStory,
+                  onTap: () {
+                    showModalBottomSheet(
+                      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                      enableDrag: true,
+                      showDragHandle: true,
+                      useSafeArea: true,
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) => BuildMapsBottomSheet(
+                        story: detailStory,
+                        mapController: mapController,
+                      ),
+                    );
+                  }),
           ],
         ),
         Text(DateUtil.dateTimeToString(context, detailStory.createdAt)),
@@ -153,35 +150,40 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Widget _buildMapsMini ({required Story detailStory, required Function onTap}) {
+  Widget _buildMiniMaps({required Story detailStory, required Function onTap}) {
     final LatLng latlng = LatLng(detailStory.lat!, detailStory.lon!);
-    final marker = {Marker(
-    markerId: MarkerId(detailStory.name),
-    position: latlng,
-    )};
+    final marker = {
+      Marker(
+        markerId: MarkerId(detailStory.name),
+        position: latlng,
+      )
+    };
     return Container(
       width: 100,
       height: 100,
       margin: const EdgeInsets.all(10),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
-        onTap: (){onTap();},
+        onTap: () {
+          onTap();
+        },
         child: IgnorePointer(
           ignoring: true,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: GoogleMap(
-              markers: marker,
-              onMapCreated: (controller) {
-                setState(() {
-                  mapController = controller;
-                });
-                mapController.animateCamera(
-                  CameraUpdate.newLatLngZoom(latlng, 10),
-                );
-              },
-              initialCameraPosition: CameraPosition(target: latlng, zoom: 1000),
-              zoomControlsEnabled: false),
+                markers: marker,
+                onMapCreated: (controller) {
+                  setState(() {
+                    mapController = controller;
+                  });
+                  mapController.animateCamera(
+                    CameraUpdate.newLatLngZoom(latlng, 10),
+                  );
+                },
+                initialCameraPosition:
+                    CameraPosition(target: latlng, zoom: 1000),
+                zoomControlsEnabled: false),
           ),
         ),
       ),
@@ -192,7 +194,8 @@ class _DetailPageState extends State<DetailPage> {
 class BuildMapsBottomSheet extends StatefulWidget {
   final Story story;
   GoogleMapController mapController;
-  BuildMapsBottomSheet({super.key, required this.story, required this.mapController});
+  BuildMapsBottomSheet(
+      {super.key, required this.story, required this.mapController});
 
   @override
   State<BuildMapsBottomSheet> createState() => _BuildMapsBottomSheetState();
@@ -219,14 +222,15 @@ class _BuildMapsBottomSheetState extends State<BuildMapsBottomSheet> {
   }
 
   void _buildMarkers() async {
-    final info =
-    await geo.placemarkFromCoordinates(latlngStory.latitude, latlngStory.longitude);
+    final info = await geo.placemarkFromCoordinates(
+        latlngStory.latitude, latlngStory.longitude);
     place = info[0];
 
     final marker = Marker(
       markerId: MarkerId(widget.story.name),
       position: latlngStory,
-      infoWindow: InfoWindow(title: widget.story.name, snippet: place.administrativeArea),
+      infoWindow: InfoWindow(
+          title: widget.story.name, snippet: place.administrativeArea),
       onTap: () {
         show();
       },
@@ -238,47 +242,52 @@ class _BuildMapsBottomSheetState extends State<BuildMapsBottomSheet> {
 
   void show() {
     showModalBottomSheet(
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .onPrimary,
-      useSafeArea: true,
-      enableDrag: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Text("${place.name}", style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
-              Text("${place.street}, ${place.name}, ${place.administrativeArea} - ${place.country}", style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center,),
-              Divider(),
-              ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(12)),
-                child: Image.network(
-                  widget.story.photoUrl,
-                  fit: BoxFit.fitWidth,
-                  width: double.infinity,
-                  alignment: Alignment.topCenter,
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        useSafeArea: true,
+        enableDrag: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (context) => Container(
+              padding: const EdgeInsets.all(16),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Text(
+                      "${place.name}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.center,
+                    ),
+                    Text(
+                      "${place.street}, ${place.name}, ${place.administrativeArea} - ${place.country}",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    Divider(),
+                    ClipRRect(
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                      child: Image.network(
+                        widget.story.photoUrl,
+                        fit: BoxFit.fitWidth,
+                        width: double.infinity,
+                        alignment: Alignment.topCenter,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ));
+            ));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Container(
-          width: MediaQuery.of(context).size.width -10,
-          child: _buildMaps()
-        ),
-      )
-    );
+        body: Center(
+      child: SizedBox(
+          width: MediaQuery.of(context).size.width - 10, child: _buildMaps()),
+    ));
   }
 
   _buildMaps() {

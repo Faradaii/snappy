@@ -3,11 +3,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 import 'package:go_router/go_router.dart';
 import 'package:hl_image_picker/hl_image_picker.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
+import 'package:snappy/config/flavor/flavor_config.dart';
+import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/add_story/add_story_bloc.dart';
+import 'package:snappy/presentation/pages/add/add_location_story.dart';
 
 import '../../../common/localizations/common.dart';
 import '../../widgets/custom_text_field.dart';
@@ -24,6 +28,9 @@ class _AddPageState extends State<AddPage> {
 
   String? imagePathState;
   TextEditingController? description;
+  double? lat;
+  double? lon;
+  geo.Placemark? place;
 
   @override
   void initState() {
@@ -52,8 +59,26 @@ class _AddPageState extends State<AddPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.addStory,
-                style: Theme.of(context).textTheme.titleLarge),
+            title: Row(
+              spacing: 5,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(AppLocalizations.of(context)!.addStory,
+                    style: Theme.of(context).textTheme.titleLarge),
+                if (FlavorConfig.instance.flavor == FlavorType.premium)
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(AppLocalizations.of(context)!.withPro,
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onPrimary)),
+                  )
+              ],
+            ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
               onPressed: () {
@@ -62,24 +87,23 @@ class _AddPageState extends State<AddPage> {
             ),
           ),
           bottomNavigationBar: _buildUploadButton(state),
-          body: SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: imagePathState?.isEmpty ?? true
+          body: SafeArea(child: LayoutBuilder(builder: (context, constraints) {
+            return SingleChildScrollView(
+                child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  imagePathState?.isEmpty ?? true
                       ? const Align(
                           alignment: Alignment.center,
                           child: Icon(
                             Icons.image,
-                            size: 100,
+                            size: 300,
                           ),
                         )
                       : _onShowImage(),
-                ),
-                Expanded(
-                  child: Padding(
+                  Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
                       spacing: 10,
@@ -95,11 +119,13 @@ class _AddPageState extends State<AddPage> {
                       ],
                     ),
                   ),
-                ),
-                _buildDescField(context)
-              ],
-            ),
-          ),
+                  _buildDescField(context),
+                  if (FlavorConfig.instance.flavor == FlavorType.premium)
+                    _buildAddLocation(context),
+                ],
+              ),
+            ));
+          })),
         );
       },
     );
@@ -182,8 +208,12 @@ class _AddPageState extends State<AddPage> {
 
   Widget _onShowImage() {
     return kIsWeb
-        ? Image.network(imagePathState!)
-        : Image.file(File(imagePathState!));
+        ? Image.network(
+            imagePathState!,
+          )
+        : Image.file(
+            File(imagePathState!),
+          );
   }
 
   _onUpload(
@@ -243,13 +273,19 @@ class _AddPageState extends State<AddPage> {
             null;
           } else if (_formKey.currentState!.validate() &&
               imagePathState!.isNotEmpty) {
-            _onUpload(context: context, description: description!.text.trim());
+            _onUpload(
+                context: context,
+                description: description!.text.trim(),
+                lat: lat,
+                lon: lon);
           }
         },
         style: ElevatedButton.styleFrom(
-          fixedSize: Size(MediaQuery.of(context).size.width, 50),
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
+            fixedSize: Size(MediaQuery.of(context).size.width, 50),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            )),
         child: state is AddStoryLoadingState
             ? CircularProgressIndicator(
                 color: Theme.of(context).colorScheme.onPrimary)
@@ -270,8 +306,10 @@ class _AddPageState extends State<AddPage> {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-        ),
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            )),
         child: Text(
           text,
           style: TextStyle(
@@ -300,5 +338,69 @@ class _AddPageState extends State<AddPage> {
         ),
       ),
     );
+  }
+
+  Widget _buildAddLocation(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            (place != null)
+                ? Expanded(
+                    child: Text(
+                        "${place?.street}, ${place?.name}, ${place?.administrativeArea} - ${place?.country} ${place?.postalCode}"))
+                : SizedBox.shrink(),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: () async {
+                  final PlaceWithLatLng? result =
+                      await context.push(PageRouteName.addLocation);
+                  if (result != null) {
+                    setState(() {
+                      lat = result.latLng.latitude;
+                      lon = result.latLng.longitude;
+                      place = result.place;
+                    });
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+                child: Text(
+                  (place == null)
+                      ? AppLocalizations.of(context)!.addLocation
+                      : AppLocalizations.of(context)!.pickAnother,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              ),
+            ),
+            if (place != null)
+              IconButton(
+                onPressed: () {
+                  setState(() {
+                    lat = null;
+                    lon = null;
+                    place = null;
+                  });
+                },
+                icon: Icon(
+                  Icons.delete_rounded,
+                  color: Theme.of(context).colorScheme.onPrimary,
+                ),
+                style: IconButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    )),
+              ),
+          ],
+        ));
   }
 }

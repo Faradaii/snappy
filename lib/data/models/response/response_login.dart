@@ -12,19 +12,19 @@ class LoginResponse extends ApiMessageResponse {
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) => LoginResponse(
-    error: json['error'],
-    message: json['message'],
-    loginResult: json['loginResult'] != null
-        ? LoginResult.fromJson(json: json['loginResult'])
-        : null,
-  );
+        error: json['error'],
+        message: json['message'],
+        loginResult: json['loginResult'] != null
+            ? LoginResult.fromJson(json: json['loginResult'])
+            : null,
+      );
 
   @override
   Map<String, dynamic> toJson() => {
-    'error': error,
-    'message': message,
-    'loginResult': loginResult?.toJson(),
-  };
+        'error': error,
+        'message': message,
+        'loginResult': loginResult?.toJson(),
+      };
 
   @override
   List<Object?> get props => [error, message, loginResult];

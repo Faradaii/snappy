@@ -10,7 +10,8 @@ class ApiMessageResponse extends Equatable {
 
   const ApiMessageResponse({required this.error, required this.message});
 
-  factory ApiMessageResponse.fromJson(Map<String, dynamic> json) => _$ApiMessageResponseFromJson(json);
+  factory ApiMessageResponse.fromJson(Map<String, dynamic> json) =>
+      _$ApiMessageResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$ApiMessageResponseToJson(this);
 

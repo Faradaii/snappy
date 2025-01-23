@@ -15,12 +15,12 @@ class StoryBloc extends Bloc<StoryEvent, StoryState> {
       final resetPage = 1;
       if (event.forceRefresh != null && event.forceRefresh == true) {
         emit(StoryLoadingState(
-            page: resetPage,
-            size: state.size,
-            listStory: []));
+            page: resetPage, size: state.size, listStory: []));
       } else {
         emit(StoryLoadingState(
-            page: state.page ?? 1, size: state.size, listStory: state.listStory));
+            page: state.page ?? 1,
+            size: state.size,
+            listStory: state.listStory));
       }
       final result = await storyGetAllUseCase.execute(
         event.forceRefresh,

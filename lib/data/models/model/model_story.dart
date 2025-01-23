@@ -24,7 +24,8 @@ class StoryModel extends Equatable {
     this.lon,
   });
 
-  factory StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
+  factory StoryModel.fromJson(Map<String, dynamic> json) =>
+      _$StoryModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$StoryModelToJson(this);
 
