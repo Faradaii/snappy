@@ -1,4 +1,3 @@
-
 enum FlavorType { premium, free }
 
 class FlavorValues {

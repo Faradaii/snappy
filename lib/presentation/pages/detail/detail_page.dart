@@ -1,4 +1,3 @@
-
 import 'package:geocoding/geocoding.dart' as geo;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,8 +23,13 @@ class _DetailPageState extends State<DetailPage> {
   bool isOpenBottomSheet = false;
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     context.read<DetailStoryBloc>().add(GetDetailStoryEvent(widget.storyId));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return BlocBuilder<DetailStoryBloc, DetailStoryState>(
       builder: (context, state) {
         return Scaffold(

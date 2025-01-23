@@ -7,6 +7,7 @@ import 'package:snappy/domain/entities/story_entity.dart';
 import 'package:snappy/presentation/bloc/stories/story_bloc.dart';
 import 'package:snappy/presentation/widgets/flag_language.dart';
 import 'package:snappy/presentation/widgets/rotating_widget.dart';
+import 'package:snappy/config/flavor/flavor_config.dart';
 
 import '../../../common/localizations/common.dart';
 import '../../../common/utils/date_util.dart';
@@ -48,9 +49,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _loadStories({bool forceRefresh = false}) {
-    context
-        .read<StoryBloc>()
-        .add(GetAllStoryEvent(forceRefresh: forceRefresh));
+    context.read<StoryBloc>().add(GetAllStoryEvent(forceRefresh: forceRefresh));
   }
 
   @override
@@ -301,17 +300,50 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(
                               height: 5,
                             ),
-                            Text(
-                              state.savedUser?.name ??
-                                  AppLocalizations.of(context)!.user,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge!
-                                  .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSecondary),
-                            ),
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                spacing: 5,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      state.savedUser?.name ??
+                                          AppLocalizations.of(context)!.user,
+                                      style: Theme
+                                          .of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                          color: Theme
+                                              .of(context)
+                                              .colorScheme
+                                              .onSecondary),
+                                    ),
+                                  ),
+                                  if (FlavorConfig.instance.flavor ==
+                                      FlavorType.premium)
+                                    Container(
+                                      padding: const EdgeInsets.all(4),
+                                      decoration: BoxDecoration(
+                                        color: Theme
+                                            .of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                          AppLocalizations.of(context)!.withPro,
+                                          style: Theme
+                                              .of(context)
+                                              .textTheme
+                                              .titleSmall
+                                              ?.copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme
+                                                  .of(context)
+                                                  .colorScheme
+                                                  .onPrimary)),
+                                    ),
+                                ]),
                             Text(
                                 state.savedUser?.email ??
                                     AppLocalizations.of(context)!.emailAddress,
