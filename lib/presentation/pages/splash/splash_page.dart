@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:snappy/config/flavor/flavor_config.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
 import 'package:snappy/presentation/widgets/rotating_widget.dart';
-import 'package:snappy/config/flavor/flavor_config.dart';
 
 import '../../../common/localizations/common.dart';
 
