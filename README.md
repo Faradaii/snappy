@@ -88,7 +88,9 @@ To get started with Snappy, follow these steps:
         
     -   For other environments, please refer to the specific setup instructions.
         
-4. **Run the application**:
+4. **Add API key**:
+    - Please follow this [official documentation](https://developers.google.com/maps/flutter-package/config) to setup Google Maps API.
+5. **Run the application**:
     
     -   In Android Studio or VS Code:
         
