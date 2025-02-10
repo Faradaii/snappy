@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-
-enum FlavorType {
-  premium,
-  free
-}
+enum FlavorType { premium, free }
 
 class FlavorValues {
   final String statusSubscription;

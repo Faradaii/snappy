@@ -59,5 +59,14 @@
     "failedLogin": "이런, 로그인에 실패했습니다",
     "successRegister": "회원가입 성공",
     "failedRegister": "이런, 회원가입에 실패했습니다",
-    "noStory": "스토리를 찾을 수 없습니다"
+    "noStory": "스토리를 찾을 수 없습니다",
+    "withPro": "Pro와 함께",
+    "addLocation": "스토리에 위치 추가",
+    "pickAnother": "다른 위치 선택",
+    "pickLocation": "위치 선택",
+    "currentLocation": "현재 위치",
+    "cancel": "취소",
+    "chooseThisLocation": "이 위치 선택",
+    "chooseByLongPress": "지도에서 길게 눌러 선택",
+    "chooseByPressDetect": "위치 감지 버튼 누르기"
 }

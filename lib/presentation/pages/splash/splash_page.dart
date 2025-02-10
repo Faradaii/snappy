@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
+import 'package:snappy/config/flavor/flavor_config.dart';
 import 'package:snappy/config/route/router.dart';
 import 'package:snappy/presentation/bloc/shared_preferences/shared_preference_bloc.dart';
 import 'package:snappy/presentation/widgets/rotating_widget.dart';
@@ -65,6 +66,7 @@ class SplashMain extends StatelessWidget {
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.max,
+          spacing: 5,
           children: <Widget>[
             RotatingWidget(
               widget: SizedBox(
@@ -81,6 +83,28 @@ class SplashMain extends StatelessWidget {
                     .textTheme
                     .displaySmall
                     ?.copyWith(fontWeight: FontWeight.bold)),
+            if (FlavorConfig.instance.flavor == FlavorType.premium)
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .primary,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(AppLocalizations.of(context)!.withPro,
+                    style: Theme
+                        .of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme
+                            .of(context)
+                            .colorScheme
+                            .onPrimary)),
+              ),
           ],
         );
       },

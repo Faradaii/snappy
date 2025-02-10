@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:snappy/presentation/pages/add/add_location_story.dart';
 import 'package:snappy/presentation/pages/home/home_page.dart';
 import 'package:snappy/presentation/pages/login/login_page.dart';
 import 'package:snappy/presentation/pages/register/register_page.dart';
@@ -13,6 +14,7 @@ abstract class PageRouteName {
   static const home = '/';
   static const detail = '/detail/:id';
   static const add = '/add';
+  static const addLocation = '/add-location-story';
   static const splash = '/splash';
   static const onboarding = '/onboarding';
   static const login = '/login';
@@ -55,6 +57,12 @@ class AppRouter {
         path: PageRouteName.add,
         pageBuilder: (_, state) => MaterialPage(
           child: AddPage(),
+        ),
+      ),
+      GoRoute(
+        path: PageRouteName.addLocation,
+        pageBuilder: (_, state) => MaterialPage(
+          child: AddLocationStoryPage(),
         ),
       ),
       GoRoute(

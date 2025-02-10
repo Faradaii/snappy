@@ -59,5 +59,14 @@
     "failedLogin": "Ups, gagal masuk",
     "successRegister": "Berhasil mendaftar",
     "failedRegister": "Ups, gagal mendaftar",
-    "noStory": "Cerita tidak ditemukan"
+    "noStory": "Cerita tidak ditemukan",
+    "withPro": "dengan Pro",
+    "addLocation": "Tambahkan Lokasi ke Cerita",
+    "pickAnother": "Pilih Lainnya",
+    "pickLocation": "Pilih Lokasi",
+    "currentLocation": "Lokasi Saat Ini",
+    "cancel": "Batal",
+    "chooseThisLocation": "Pilih Lokasi Ini",
+    "chooseByLongPress": "Pilih dengan Tekan Lama pada Peta",
+    "chooseByPressDetect": "Tekan Tombol Deteksi Lokasi"
 }

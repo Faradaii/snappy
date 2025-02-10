@@ -15,13 +15,12 @@ class FlagLanguage extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: DropdownButtonHideUnderline(
         child: DropdownButton2(
+          alignment: AlignmentDirectional.centerEnd,
           dropdownStyleData: DropdownStyleData(
-            width: 100,
             padding: const EdgeInsets.symmetric(vertical: 6),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
             ),
-            offset: const Offset(-20, -5),
           ),
           customButton: Container(
             padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
@@ -31,19 +30,23 @@ class FlagLanguage extends StatelessWidget {
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              spacing: 10,
+              spacing: 15,
               children: [
-                Text(
-                  Localization.getFlag(
-                      AppLocalizations.of(context)!.localeName),
-                  style: Theme.of(context).textTheme.headlineLarge,
+                Flexible(
+                  child: Text(
+                    Localization.getFlag(
+                        AppLocalizations.of(context)!.localeName),
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
                 ),
-                Text(
-                  AppLocalizations.of(context)!.localeName.toUpperCase(),
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall
-                      ?.copyWith(fontWeight: FontWeight.bold),
+                Flexible(
+                  child: Text(
+                    AppLocalizations.of(context)!.localeName.toUpperCase(),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall
+                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ],
             ),
@@ -56,16 +59,20 @@ class FlagLanguage extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 10,
                 children: [
-                  Text(
-                    flag,
-                    style: Theme.of(context).textTheme.headlineLarge,
+                  Expanded(
+                    child: Text(
+                      flag,
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
                   ),
-                  Text(
-                    locale.languageCode.toUpperCase(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleSmall
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Text(
+                      locale.languageCode.toUpperCase(),
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ],
               ),

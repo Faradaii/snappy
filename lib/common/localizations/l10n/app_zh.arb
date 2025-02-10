@@ -59,5 +59,14 @@
     "failedLogin": "哎呀，登录失败",
     "successRegister": "注册成功",
     "failedRegister": "哎呀，注册失败",
-     "noStory": "未找到故事"
+     "noStory": "未找到故事",
+     "withPro": "使用专业版",
+     "addLocation": "添加位置到故事",
+     "pickAnother": "选择另一个",
+     "pickLocation": "选择位置",
+     "currentLocation": "当前位置",
+     "cancel": "取消",
+     "chooseThisLocation": "选择此位置",
+     "chooseByLongPress": "通过长按地图选择",
+     "chooseByPressDetect": "按下检测位置按钮"
 }

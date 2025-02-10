@@ -14,7 +14,8 @@ class StoryDetailResponse extends ApiMessageResponse {
     this.story,
   });
 
-  factory StoryDetailResponse.fromJson(Map<String, dynamic> json) => _$StoryDetailResponseFromJson(json);
+  factory StoryDetailResponse.fromJson(Map<String, dynamic> json) =>
+      _$StoryDetailResponseFromJson(json);
 
   @override
   Map<String, dynamic> toJson() => _$StoryDetailResponseToJson(this);

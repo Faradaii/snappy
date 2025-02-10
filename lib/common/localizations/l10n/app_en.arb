@@ -59,5 +59,14 @@
     "failedLogin": "Oops, Failed to log you in",
     "successRegister": "Success Register",
     "failedRegister": "Oops, Failed to register you in",
-    "noStory": "No story found"
+    "noStory": "No story found",
+    "withPro": "with Pro",
+    "addLocation": "Add Location to Story",
+    "pickAnother": "Pick Another",
+    "pickLocation": "Pick Location",
+    "currentLocation": "Current Location",
+    "cancel": "Cancel",
+    "chooseThisLocation": "Choose This Location",
+    "chooseByLongPress": "Choose by Long Press on Map",
+    "chooseByPressDetect": "Press Detect Location Button"
 }

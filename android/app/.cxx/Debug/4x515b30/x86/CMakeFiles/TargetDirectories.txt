@@ -1,0 +1,2 @@
+D:/pengembangan/snappy/android/app/.cxx/Debug/4x515b30/x86/CMakeFiles/edit_cache.dir
+D:/pengembangan/snappy/android/app/.cxx/Debug/4x515b30/x86/CMakeFiles/rebuild_cache.dir
